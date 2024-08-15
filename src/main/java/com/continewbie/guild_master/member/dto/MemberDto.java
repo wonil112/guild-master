@@ -8,6 +8,7 @@ import lombok.Getter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 
 public class MemberDto {
     @Getter
@@ -52,10 +53,6 @@ public class MemberDto {
                 message = "휴대폰 번호는 010으로 시작하는 11자리 숫자와 '-'로 구성되어야 합니다.")
         private String phone;
 
-        private Member.MemberStatus memberStatus;
-
-        public void setMemberId(long memberId) {this.memberId = memberId;}
-
     }
 
     @Getter
@@ -65,8 +62,9 @@ public class MemberDto {
         private String name;
         private String email;
         private String phone;
-        private Member.MemberStatus memberStatus;
-        public String getMemberStatus(){return memberStatus.getStatus();}
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
+        private LocalDateTime deletedAt;
 
     }
 }
