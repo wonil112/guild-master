@@ -9,5 +9,4 @@ public class GuildMasterApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GuildMasterApplication.class, args);
 	}
-
 }
