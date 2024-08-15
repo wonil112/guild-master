@@ -1,6 +1,6 @@
 package com.continewbie.guild_master.member.dto;
 
-import com.continewbie.guild_master.member.entity.Member;
+
 import com.continewbie.guild_master.utils.validator.NotSpace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
