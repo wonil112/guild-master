@@ -32,6 +32,7 @@ public class MemberService {
         Member member = verifyFindIdMember(memberId);
         member.setDeletedAt(LocalDateTime.now());
         memberRepository.save(member);
+        
     }
 
 
