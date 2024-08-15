@@ -1,9 +1,10 @@
 package com.continewbie.guild_master.member.dto;
 
-import com.continewbie.guild_master.member.entity.Member;
+
 import com.continewbie.guild_master.utils.validator.NotSpace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -35,10 +36,10 @@ public class MemberDto {
     }
 
     @Getter
+    @Setter
     @AllArgsConstructor
     public static class Patch{
         private long memberId;
-
 
         @NotSpace(message = "휴대폰 번호는 공백이 아니어야 합니다")
         @Pattern(regexp = "^[가-힣]{1,15}$", message = "이름은 공백 없이 한글로만 구성되며, 최대 15자까지 입력할 수 있습니다.")
@@ -53,6 +54,9 @@ public class MemberDto {
                 message = "휴대폰 번호는 010으로 시작하는 11자리 숫자와 '-'로 구성되어야 합니다.")
         private String phone;
 
+        public void setMemberId(long memberId) {
+            this.memberId = memberId;
+        }
     }
 
     @Getter
