@@ -21,7 +21,6 @@ import java.net.URI;
 @Validated
 @Slf4j
 public class MemberController {
-    private final static String MEMBER_DEFAULT_URL = "/members";
 //    회원가입시 초기 URL
     private final static String SIGN_UP_URL = "/signup";
 
@@ -39,7 +38,7 @@ public class MemberController {
         Member createdMember = memberService.createMember(member);
         URI location = UriCreator.createUri(SIGN_UP_URL, createdMember.getMemberId());
         return ResponseEntity.created(location).build();
-        
+
     }
 
 
