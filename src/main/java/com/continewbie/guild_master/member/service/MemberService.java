@@ -22,7 +22,7 @@ public class MemberService {
     }
 
     public Member createMember(Member member){;
-
+        verifyExistsEmail(member.getEmail());
         return memberRepository.save(member);
     }
 
