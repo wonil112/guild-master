@@ -6,14 +6,13 @@ import com.continewbie.guild_master.member.mapper.MemberMapper;
 import com.continewbie.guild_master.member.service.MemberService;
 import com.continewbie.guild_master.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.net.URI;
 
 @RestController
@@ -21,7 +20,7 @@ import java.net.URI;
 @Validated
 @Slf4j
 public class MemberController {
-//    회원가입시 초기 URL
+    //    회원가입시 초기 URL
     private final static String SIGN_UP_URL = "/signup";
 
     private final MemberService memberService;
@@ -33,12 +32,18 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post requestBody){
+    public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post requestBody) {
         Member member = memberMapper.memberPostDtoToMember(requestBody);
         Member createdMember = memberService.createMember(member);
         URI location = UriCreator.createUri(SIGN_UP_URL, createdMember.getMemberId());
         return ResponseEntity.created(location).build();
 
+    }
+
+    @DeleteMapping("/{member-id}")
+    public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId) {
+        memberService.deleteMember(memberId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
