@@ -29,6 +29,7 @@ public class Member {
     private String phone;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(length = 20, nullable = false)
     private MemberStatus memberStatus = MemberStatus.MEMBER_STATUS_ACTIVE;
 
     @Column(nullable = false, updatable = false)
