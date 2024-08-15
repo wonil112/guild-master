@@ -40,6 +40,14 @@ public class MemberController {
 
     }
 
+    @PatchMapping("/{member-id}")
+    public ResponseEntity patchMember(@PathVariable("member-id") @Positive long memberId,   @RequestBody @Valid MemberDto.Patch requestBody){
+        requestBody.setMemberId(memberId);
+        Member member = memberMapper.memberPatchDtoToMember(requestBody);
+        Member updatedMember = memberService.updateMember(member);
+        return new ResponseEntity<>(memberMapper.memberToMemberResponse(updatedMember),HttpStatus.OK);
+    }
+
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId) {
         memberService.deleteMember(memberId);

@@ -7,6 +7,8 @@ import com.continewbie.guild_master.member.repository.MemberRepository;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -29,10 +31,22 @@ public class MemberService {
 
     public void deleteMember(long memberId){
 //      verifyFindIdMember() =  repository에서 memberId로 존재여부를 검증한 뒤 해당 Member를 반환하는 메서드
-        Member member = verifyFindIdMember(memberId);
-        member.setDeletedAt(LocalDateTime.now());
-        memberRepository.save(member);
+        Member findMember = verifyFindIdMember(memberId);
+        findMember.setDeletedAt(LocalDateTime.now());
+        memberRepository.save(findMember);
         
+    }
+
+    public Member updateMember(Member member){
+        Member findMember = verifyFindIdMember(member.getMemberId());
+        Optional.ofNullable(member.getName())
+                .ifPresent( name -> findMember.setName(member.getName()));
+        Optional.ofNullable(member.getPassword())
+                .ifPresent(password -> findMember.setPassword(member.getPassword()));
+        Optional.ofNullable(member.getPhone())
+                .ifPresent(phone -> findMember.setPhone(member.getPhone()));
+
+        return memberRepository.save(findMember);
     }
 
 
