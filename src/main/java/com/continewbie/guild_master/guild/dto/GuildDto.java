@@ -16,7 +16,6 @@ public class GuildDto {
         private String guildMasterName;
         private int guildTotalPopulation;
         private String guildContent;
-
     }
 
     @Getter

@@ -36,6 +36,12 @@ public class Guild extends Auditable {
     @JoinColumn(name = "game_id")
     private Game game;
 
+    public void setGame(Game game) {
+        if (!game.getGuilds().contains(this)) {
+            game.getGuilds().add(this);
+        }
+        this.game = game;
+    }
 
 
 }
