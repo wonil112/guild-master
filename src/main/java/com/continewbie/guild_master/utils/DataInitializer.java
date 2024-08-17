@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // 포지션 데이터 생성
         List<Position> overwatchPositions = List.of(
-                new Position("Tank", "OVW", overwatch),
+                new Position("Tanker", "OVW", overwatch),
                 new Position("Dealer", "OVW", overwatch),
                 new Position("Healer", "OVW", overwatch),
                 new Position("Anything", "OVW", overwatch)
