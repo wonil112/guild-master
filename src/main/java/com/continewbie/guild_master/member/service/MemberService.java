@@ -43,7 +43,7 @@ public class MemberService {
     public void deleteMember(long memberId){
 //      verifyFindIdMember() =  repository에서 memberId로 존재여부를 검증한 뒤 해당 Member를 반환하는 메서드
         Member findMember = verifyFindIdMember(memberId);
-        findMember.setDeletedAt(LocalDateTime.now());
+        verifyActiveStatus(findMember);
         memberRepository.save(findMember);
         
     }
@@ -72,8 +72,14 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         Member findMember  = optionalMember.orElseThrow(() ->
                     new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
         return findMember;
     }
 
+    private void verifyActiveStatus(Member member){
+        if (member.getDeletedAt() != null){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+    }
 
 }

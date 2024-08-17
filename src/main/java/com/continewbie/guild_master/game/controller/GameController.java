@@ -45,4 +45,9 @@ public class GameController {
                 .gamesToGamesResponses((findGames)),pageGames), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{game-id}")
+    public void deleteGame(@PathVariable("game-id") @Positive long gameId){
+        gameService.deleteGame(gameId);
+    }
+
 }
