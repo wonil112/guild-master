@@ -3,7 +3,7 @@ package com.continewbie.guild_master.utils;
 import com.continewbie.guild_master.game.entity.Game;
 import com.continewbie.guild_master.game.repository.GameRepository;
 import com.continewbie.guild_master.position.entity.Position;
-import com.continewbie.guild_master.position.ropository.PositionRepository;
+import com.continewbie.guild_master.position.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // 포지션 데이터 생성
         List<Position> overwatchPositions = List.of(
-                new Position("Tank", "OVW", overwatch),
+                new Position("Tanker", "OVW", overwatch),
                 new Position("Dealer", "OVW", overwatch),
                 new Position("Healer", "OVW", overwatch),
                 new Position("Anything", "OVW", overwatch)
