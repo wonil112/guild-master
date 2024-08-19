@@ -52,6 +52,7 @@ public class EventService {
     public Event findEvent(long eventId){
         return findVerifiedEvent(eventId);
     }
+    
 
     public Page<Event> findEvents(int page, int size){
         return eventRepository.findAll(PageRequest.of(page, size,
