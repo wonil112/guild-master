@@ -8,8 +8,9 @@ import lombok.Getter;
         GAME_NOT_FOUND(404, "Game not found"),
         INVALID_MEMBER_STATUS(400, "Invalid member status"),
         GUILD_NOT_FOUND(404,"guild not found"),
-        GUILD_ALREADY_EXISTS(404,"Guild already exists");
-
+        GUILD_ALREADY_EXISTS(404,"Guild already exists"),
+        EVENT_NOT_FOUND(404, "Event not found"),
+        EVENT_MAX_PARTICIPANTS(400, "CurrentPopulation Over TotalPopulation");
 
         @Getter
         private int status;
