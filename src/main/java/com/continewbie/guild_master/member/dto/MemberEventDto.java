@@ -24,5 +24,4 @@ public class MemberEventDto {
     @NotBlank(message = "선택된 포지션은 Not Blank")
     @Size(max = 15, message = "포지션은 15글자 이내여야 합니다.")
     private String selectedPosition; // 선택된 포지션
-
 }

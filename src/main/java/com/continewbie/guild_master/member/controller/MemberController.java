@@ -65,7 +65,7 @@ public class MemberController {
     }
 
     @GetMapping
-    ResponseEntity getMembers(@Positive @RequestParam int page,
+    public ResponseEntity getMembers(@Positive @RequestParam int page,
                                           @Positive @RequestParam int size){
         Page<Member> pageMembers = memberService.findMembers(page -1 ,size);
         List<Member> findMembers = pageMembers.getContent();

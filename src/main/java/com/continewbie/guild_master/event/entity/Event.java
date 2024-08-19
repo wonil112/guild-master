@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class Event extends Auditable {
     @Column(length = 20, nullable = false)
     private String eventName;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String eventContent;
 
     @Column(nullable = false)
@@ -35,10 +36,10 @@ public class Event extends Auditable {
     private int eventCurrentPopulation = 1;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @Column(nullable = false)
-    private LocalDate DueDate;
+    private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.EVENT_STATUS_ACTIVE;
@@ -69,7 +70,6 @@ public class Event extends Auditable {
 
     public enum EventStatus {
         EVENT_STATUS_ACTIVE("활성"),
-        EVENT_STATUS_CANCEL("취소"),
         EVENT_STATUS_COMPLETE("완료");
 
         @Getter
