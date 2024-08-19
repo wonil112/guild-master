@@ -53,7 +53,6 @@ public class EventService {
         return findVerifiedEvent(eventId);
     }
 
-
     public Page<Event> findEvents(int page, int size){
         return eventRepository.findAll(PageRequest.of(page, size,
                 Sort.by("eventId").ascending()));
