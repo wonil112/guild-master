@@ -2,6 +2,7 @@ package com.continewbie.guild_master.advice;
 
 import com.continewbie.guild_master.errorresponse.ErrorResponse;
 import com.continewbie.guild_master.exception.BusinessLogicException;
+import com.continewbie.guild_master.utils.validator.InvalidEventDateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,5 +87,14 @@ public class GlobalExceptionAdvice {
         final ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
 
         return response;
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidEventDateException(InvalidEventDateException e) {
+        // FieldError 객체 생성
+
+        // FieldError 리스트를 이용해 ErrorResponse 생성
+        return new ErrorResponse(e.getStatus(), e.getMessage());
     }
 }
