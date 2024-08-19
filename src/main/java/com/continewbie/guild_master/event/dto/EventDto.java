@@ -56,19 +56,15 @@ public class  EventDto {
     @Setter
     public static class Response {
         private long eventId;
-//        private long guildId;
+        private long guildId;
         private String eventName;
         private String eventContent;
         private int eventTotalPopulation;
         private int eventCurrentPopulation;
         private LocalDateTime startDate;
         private LocalDateTime dueDate;
-        private Event.EventStatus eventStatus;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
 
-        public String getEventStatus() {
-            return eventStatus.getStatus();
-        }
     }
 }
