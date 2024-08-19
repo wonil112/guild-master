@@ -38,42 +38,14 @@ public class Event extends Auditable {
     @Column(nullable = false)
     private LocalDateTime dueDate;
 
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus = EventStatus.EVENT_STATUS_ACTIVE;
-
-//    @ManyToOne
-//    @JoinColumn(name="guild_id")
-//    private Guild guild;
-
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberEvent> memberEvents = new ArrayList<>();
 
-    //중복 검사 메서드
-//    public void setGuild(Guild guild) {
-//        if(!guild.getEvents().contains(this)){
-//            guild.getEvents().add(this);
-//        }
-//        this.guild = guild;
-//    }
 
-    //중복 검사 메서드
     public void addMemberEvent(MemberEvent memberEvent){
         memberEvents.add(memberEvent);
         if(memberEvent.getEvent()!=this){
             memberEvent.addEvent(this);
-        }
-    }
-
-
-    public enum EventStatus {
-        EVENT_STATUS_ACTIVE("활성"),
-        EVENT_STATUS_COMPLETE("완료");
-
-        @Getter
-        private String status;
-
-        EventStatus(String status){
-            this.status = status;
         }
     }
 }

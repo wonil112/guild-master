@@ -16,18 +16,12 @@ import java.util.Optional;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
-    private final MemberRepository memberRepository;
 
-    public EventService(EventRepository eventRepository, MemberRepository memberRepository) {
+    public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
-        this.memberRepository = memberRepository;
     }
 
     public Event createEvent(Event event) {
-        // 현재 인원이 최대 인원을 넘으면 안되는 로직 구현
-        // verifiedPopulation 메서드 생성
-        verifiedPopulation(event);
-
         if(event.getStartDate().isAfter(event.getDueDate())){
             throw new InvalidEventDateException(404, "종료 날짜는 시작 날짜보다 뒤여야 합니다");
         }
@@ -70,7 +64,7 @@ public class EventService {
     }
 
     public void verifiedPopulation(Event event){
-
+        // 이벤트 참석 메서드에 들어갈 검증
         if(event.getEventCurrentPopulation() > event.getEventTotalPopulation()){
             throw new BusinessLogicException(ExceptionCode.EVENT_MAX_PARTICIPANTS);
         }

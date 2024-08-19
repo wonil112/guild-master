@@ -28,12 +28,10 @@ public class EventController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
-    private final EventRepository eventRepository;
 
-    public EventController(EventService eventService, EventMapper eventMapper, EventRepository eventRepository) {
+    public EventController(EventService eventService, EventMapper eventMapper) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
-        this.eventRepository = eventRepository;
     }
 
     @PostMapping
