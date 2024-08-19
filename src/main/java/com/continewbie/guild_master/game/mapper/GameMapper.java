@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper(componentModel = "spring" , unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface GameMapper {
 
-
      GameDto.Response gameToGameResponseDto(Game game);
 
      List<GameDto.Response> gamesToGamesResponses(List<Game> games);

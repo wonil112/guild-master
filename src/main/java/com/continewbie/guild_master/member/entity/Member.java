@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +30,23 @@ public class Member extends Auditable {
     @Column(length = 13, nullable = false)
     private String phone;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    List<MemberGuild> memberGuildList = new ArrayList<>();
 
+    public void addMemberGuild(MemberGuild memberGuild){
+        this.memberGuildList.add(memberGuild);
+        if(memberGuild.getMember() != this){
+            memberGuild.addMember(this);
+        }
+    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<MemberEvent> memberEvents = new ArrayList<>();
 
+    public void addMemberEvent(MemberEvent memberEvent) {
+        memberEvents.add(memberEvent);
+        if(memberEvent.getMember() != this) {
+            memberEvent.addMember(this);
+        }
+    }
 
 }

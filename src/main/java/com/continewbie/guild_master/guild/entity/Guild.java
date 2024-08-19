@@ -1,23 +1,29 @@
 package com.continewbie.guild_master.guild.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
+import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.game.entity.Game;
+import com.continewbie.guild_master.member.entity.MemberGuild;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Guild extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long guildId;
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, length = 20)
     private String guildName;
 
     @Column(nullable = false, length = 15)
@@ -32,6 +38,16 @@ public class Guild extends Auditable {
     @Column
     private String guildContent;
 
+    @OneToMany(mappedBy = "guild", cascade = CascadeType.PERSIST)
+    List<Event> eventList =  new ArrayList<>();
+
+    public void setEvent(Event event) {
+        eventList.add(event);
+        if (event.getGuild() != this) {
+            event.setGuild(this);
+        }
+    }
+
     @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
@@ -42,6 +58,5 @@ public class Guild extends Auditable {
         }
         this.game = game;
     }
-
 
 }
