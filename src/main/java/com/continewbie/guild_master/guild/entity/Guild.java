@@ -1,6 +1,7 @@
 package com.continewbie.guild_master.guild.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
+import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.game.entity.Game;
 import com.continewbie.guild_master.member.entity.MemberGuild;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,16 @@ public class Guild extends Auditable {
 
     @Column
     private String guildContent;
+
+    @OneToMany(mappedBy = "guild", cascade = CascadeType.PERSIST)
+    List<Event> eventList =  new ArrayList<>();
+
+    public void setEvent(Event event) {
+        eventList.add(event);
+        if (event.getGuild() != this) {
+            event.setGuild(this);
+        }
+    }
 
     @ManyToOne
     @JoinColumn(name = "game_id")
