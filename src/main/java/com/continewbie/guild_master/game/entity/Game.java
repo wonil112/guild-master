@@ -16,6 +16,7 @@ import java.util.ArrayList;
 @Setter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 public class Game extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

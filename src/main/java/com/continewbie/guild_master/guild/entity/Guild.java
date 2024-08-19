@@ -2,16 +2,21 @@ package com.continewbie.guild_master.guild.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
 import com.continewbie.guild_master.game.entity.Game;
+import com.continewbie.guild_master.member.entity.MemberGuild;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Guild extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +47,5 @@ public class Guild extends Auditable {
         }
         this.game = game;
     }
-
 
 }
