@@ -17,7 +17,7 @@ public class Guild extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long guildId;
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, length = 20)
     private String guildName;
 
     @Column(nullable = false, length = 15)
