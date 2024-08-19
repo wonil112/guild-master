@@ -7,8 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -31,32 +29,6 @@ public class Member extends Auditable {
     @Column(length = 13, nullable = false)
     private String phone;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private MemberStatus memberStatus = MemberStatus.MEMBER_STATUS_ACTIVE;
-
-    @OneToMany(mappedBy = "member")
-    private List<MemberEvent> memberEvents = new ArrayList<>();
-
-    public void addMemberEvent(MemberEvent memberEvent) {
-        memberEvents.add(memberEvent);
-        if(memberEvent.getMember() != this) {
-            memberEvent.addMember(this);
-        }
-    }
-
-    public enum MemberStatus {
-        MEMBER_STATUS_ACTIVE("활동중"),
-        MEMBER_STATUS_INACTIVE("비활동중"),
-        MEMBER_STATUS_SLEEP("휴면중");
-
-        @Getter
-        private String status;
-
-        MemberStatus(String status){
-            this.status = status;
-        }
-    }
 
 
 }
