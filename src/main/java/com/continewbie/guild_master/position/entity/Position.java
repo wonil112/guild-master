@@ -1,7 +1,7 @@
 package com.continewbie.guild_master.position.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
-//import com.continewbie.guild_master.game.entity.Game;
+import com.continewbie.guild_master.game.entity.Game;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,15 +25,15 @@ public class Position {
     @Column
     private String gameCode;
 
-//    @ManyToOne
-//    @JoinColumn(name = "game_id")
-//    private Game game;
-//
-//    public Position(String positionName, String gameCode, Game game) {
-//        this.positionName = positionName;
-//        this.gameCode = gameCode;
-//        this.game = game;
-//
-//    }
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private Game game;
+
+    public Position(String positionName, String gameCode, Game game) {
+        this.positionName = positionName;
+        this.gameCode = gameCode;
+        this.game = game;
+
+    }
 }
 
