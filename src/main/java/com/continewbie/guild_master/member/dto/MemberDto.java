@@ -28,7 +28,6 @@ public class MemberDto {
 
         @NotBlank@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()\\-_=+{};:,<.>]).{8,20}$",
                 message = "비밀번호는 8자 이상 20자 이하이며, 영어 대소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.")
-
         private String password;
 
         @Pattern(regexp = "^010-\\d{3,4}-\\d{4}$",

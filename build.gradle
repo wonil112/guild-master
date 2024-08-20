@@ -7,6 +7,12 @@ plugins {
 group = 'com.continewbie'
 version = '0.0.1-SNAPSHOT'
 
+javadoc.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(11)
@@ -35,10 +41,18 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.1.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.1.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'com.google.code.gson:gson'
 
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+tasks.named('javadoc') {
+	source = sourceSets.main.allJava
+	options.memberLevel = JavadocMemberLevel.PRIVATE
+	destinationDir = file("build/docs/javadoc")
 }
