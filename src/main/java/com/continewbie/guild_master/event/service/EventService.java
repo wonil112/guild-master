@@ -4,6 +4,7 @@ import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.event.repository.EventRepository;
 import com.continewbie.guild_master.exception.BusinessLogicException;
 import com.continewbie.guild_master.exception.ExceptionCode;
+import com.continewbie.guild_master.member.entity.MemberEvent;
 import com.continewbie.guild_master.member.repository.MemberRepository;
 import com.continewbie.guild_master.utils.validator.InvalidEventDateException;
 import org.springframework.data.domain.Page;
@@ -62,6 +63,12 @@ public class EventService {
                 new BusinessLogicException(ExceptionCode.EVENT_NOT_FOUND));
         return findEvent;
     }
+
+    // 멤버와 게임티어, 선택포지션을 입력 받는 메서드 생성
+//    public void registerMemberToEvent(long eventId, ){
+//        MemberEvent memberEvent = new MemberEvent();
+//        memberEvent.setMember();
+//    }
 
     public void verifiedPopulation(Event event){
         // 이벤트 참석 메서드에 들어갈 검증

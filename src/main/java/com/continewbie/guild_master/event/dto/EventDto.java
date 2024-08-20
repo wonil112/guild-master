@@ -50,6 +50,14 @@ public class  EventDto {
         public void setEventId(long eventId) {this.eventId = eventId;}
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class Register{
+        private Long memberId;
+        private String gameTier;
+        private String position;
+    }
+
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
