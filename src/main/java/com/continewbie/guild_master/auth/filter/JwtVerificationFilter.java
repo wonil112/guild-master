@@ -2,6 +2,8 @@ package com.continewbie.guild_master.auth.filter;
 
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
 import com.continewbie.guild_master.auth.utils.JwtAuthorityUtils;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,9 +30,16 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 검증된 claims 를 데리고 와서
-        Map<String, Object> claims = verifyJws(request);
-        // claims 를 넣고 Context 를 만들어줌.
-        setAuthenticationToContext(claims);
+        try {
+            Map<String, Object> claims = verifyJws(request);
+            setAuthenticationToContext(claims);
+        } catch (SignatureException se) {
+            request.setAttribute("exception", se);
+        } catch (ExpiredJwtException ee) {
+            request.setAttribute("exception", ee);
+        } catch (Exception e) {
+            request.setAttribute("exception", e);
+        }
         filterChain.doFilter(request, response);
     }
 

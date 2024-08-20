@@ -25,7 +25,8 @@ import java.util.List;
 @Slf4j
 public class MemberController {
     //    회원가입시 초기 URL
-    private final static String SIGN_UP_URL = "/signup";
+//    private final static String SIGN_UP_URL = "/signup";
+    private final static String MEMBER_DEFAULT_URL = "/members";
 
     private final MemberService memberService;
     private final MemberMapper memberMapper;
@@ -35,13 +36,13 @@ public class MemberController {
         this.memberMapper = memberMapper;
     }
 
-    @PostMapping("/signup")
+    @PostMapping
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post requestBody) {
         Member member = memberMapper.memberPostDtoToMember(requestBody);
         Member createdMember = memberService.createMember(member);
-        URI location = UriCreator.createUri(SIGN_UP_URL, createdMember.getMemberId());
-        return ResponseEntity.created(location).build();
+        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createdMember.getMemberId());
 
+        return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{member-id}")
