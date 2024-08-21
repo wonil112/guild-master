@@ -32,6 +32,7 @@ public class MemberGuild extends Auditable {
     private String nickName;
 
     @ElementCollection(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
     private List<MemberGuildRole> memberGuildRoles = new ArrayList<>();
 
     public void addMember(Member member){
@@ -47,6 +48,7 @@ public class MemberGuild extends Auditable {
             this.guild.addMemberGuild(this);
         }
     }
+
 
     public enum MemberGuildRole {
         MEMBER_GUILD_ROLE_PLAYER(1, "일반 길드원"),
