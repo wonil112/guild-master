@@ -39,6 +39,16 @@ public class Guild extends Auditable {
     private String guildContent;
 
     @OneToMany(mappedBy = "guild", cascade = CascadeType.PERSIST)
+    List<MemberGuild> memberGuildList = new ArrayList<>();
+
+    public void addMemberGuild(MemberGuild memberGuild){
+        this.memberGuildList.add(memberGuild);
+        if(memberGuild.getGuild() != this){
+            memberGuild.addGuild(this);
+        }
+    }
+
+    @OneToMany(mappedBy = "guild", cascade = CascadeType.PERSIST)
     List<Event> eventList =  new ArrayList<>();
 
     public void setEvent(Event event) {
@@ -49,7 +59,7 @@ public class Guild extends Auditable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name = "GAME_ID")
     private Game game;
 
     public void setGame(Game game) {

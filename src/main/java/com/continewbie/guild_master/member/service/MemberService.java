@@ -51,7 +51,7 @@ public class MemberService {
     }
 
     public Member findMember(long memberId){
-        Member findMember = verifyFindIdMember(memberId);
+        Member findMember = verifyFindMemberId(memberId);
         return findMember;
     }
 
@@ -62,14 +62,14 @@ public class MemberService {
 
     public void deleteMember(long memberId){
 //      verifyFindIdMember() =  repository에서 memberId로 존재여부를 검증한 뒤 해당 Member를 반환하는 메서드
-        Member findMember = verifyFindIdMember(memberId);
+        Member findMember = verifyFindMemberId(memberId);
         findMember.setDeletedAt(LocalDateTime.now());
         memberRepository.save(findMember);
         
     }
 
     public Member updateMember(Member member){
-        Member findMember = verifyFindIdMember(member.getMemberId());
+        Member findMember = verifyFindMemberId(member.getMemberId());
         Optional.ofNullable(member.getName())
                 .ifPresent( name -> findMember.setName(member.getName()));
         Optional.ofNullable(member.getPassword())
@@ -81,14 +81,21 @@ public class MemberService {
     }
 
 
-    private void verifyExistsEmail(String email){
+    public void verifyExistsEmail(String email){
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()){
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
         }
     }
+    public Member findVerifiedEmail(String email){
+        Optional<Member> optionalMember= memberRepository.findByEmail(email);
+        Member findMember  = optionalMember.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        return findMember;
+    }
 
-    private Member verifyFindIdMember(long memberId){
+
+    public Member verifyFindMemberId(long memberId){
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         Member findMember  = optionalMember.orElseThrow(() ->
                     new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -96,10 +103,7 @@ public class MemberService {
         if(findMember.getDeletedAt() != null ){
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
-
         return findMember;
     }
-
-
 
 }

@@ -1,11 +1,10 @@
 package com.continewbie.guild_master.guild.mapper;
 
 
+import com.continewbie.guild_master.game.entity.Game;
 import com.continewbie.guild_master.guild.dto.GuildDto;
 import com.continewbie.guild_master.guild.entity.Guild;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 

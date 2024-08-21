@@ -42,6 +42,7 @@ public class Member extends Auditable {
             memberGuild.addMember(this);
         }
     }
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<MemberEvent> memberEvents = new ArrayList<>();
 
