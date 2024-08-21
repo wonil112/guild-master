@@ -27,7 +27,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthorityUtils authorityUtils;
 
-
     public MemberService(MemberRepository memberRepository, ApplicationEventPublisher publisher, PasswordEncoder passwordEncoder, JwtAuthorityUtils authorityUtils) {
         this.memberRepository = memberRepository;
         this.publisher = publisher;

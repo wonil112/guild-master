@@ -32,7 +32,7 @@ public class GuildService {
 
     public Guild createGuild(Guild guild, Authentication authentication) {
         // user 권한이 없다면 member_need_login 코드 발생하면서 throw
-        System.out.println("1. Authorities: " + authentication.getAuthorities());
+//        System.out.println("1. Authorities: " + authentication.getAuthorities());
 
 //        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("USER"))) {
 //            throw new BusinessLogicException(ExceptionCode.MEMBER_NEED_LOGIN);
