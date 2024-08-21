@@ -18,11 +18,11 @@ public class MemberEvent extends Auditable {
     private long memberEventId;
 
     @ManyToOne
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "EVENT_ID")
+    @JoinColumn(name = "event_id")
     private Event event;
 
     @Column(nullable = false)
