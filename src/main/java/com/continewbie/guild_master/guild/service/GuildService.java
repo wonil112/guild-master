@@ -43,8 +43,7 @@ public class GuildService {
         for(MemberGuild memberGuild : member.getMemberGuildList()){
             if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()){
                 throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
-            }
-            else if(email.equals(memberGuild.getMember().getEmail())){
+            } else if(email.equals(memberGuild.getMember().getEmail())){
                 throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
             }
         }
@@ -69,6 +68,86 @@ public class GuildService {
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MASTER);
 
         memberGuild.setMemberGuildRoles(roles);
+
+        guild.addMemberGuild(memberGuild);
+
+        return guildRepository.save(guild);
+    }
+
+    public Guild registrationGuild(Guild guild, Authentication authentication, String nickName) {
+
+        // Member 의 role 이 ROLE_USER 가 없다면 회원이 아니므로 길드 생성 불가.
+        if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        // authentication 에서 Principal 에 있는 email 확인.
+        String email = (String) authentication.getPrincipal();
+        Member member = memberService.findVerifiedEmail(email);
+
+        // 해당 member 의 memberGuild 를 조회해서 동일한 gameId 가 있으면 exception 발생.
+        // 현재 email 이 memberGuild 안에 동일하게 있으면 exception 발생.
+        int registrationNumber = 0;
+        for(MemberGuild memberGuild : member.getMemberGuildList()){
+            if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()) {
+                registrationNumber++;
+            }
+        }
+
+        for(MemberGuild memberGuild : member.getMemberGuildList()){
+            if(registrationNumber != 0 && memberGuild.getMemberGuildRoles().contains("MEMBER_GUILD_ROLE_PLAYER")){
+                throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
+            } else if(registrationNumber >= 5) {
+                throw new BusinessLogicException(ExceptionCode.GUILD_REGISTRATION_DENIED);
+            } else if(email.equals(memberGuild.getMember().getEmail())){
+                throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+            }
+        }
+
+        MemberGuild memberGuild = new MemberGuild();
+        memberGuild.setMember(member);
+        memberGuild.setGuild(guild);
+        memberGuild.setNickName(nickName);
+
+        guild.addMemberGuild(memberGuild);
+
+        return guildRepository.save(guild);
+    }
+
+    public Guild acceptGuild(Guild guild, Authentication authentication, String nickName) {
+
+        // Member 의 role 이 ROLE_USER 가 없다면 회원이 아니므로 길드 생성 불가.
+        if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        // authentication 에서 Principal 에 있는 email 확인.
+        String email = (String) authentication.getPrincipal();
+        Member member = memberService.findVerifiedEmail(email);
+
+        // 해당 member 의 memberGuild 를 조회해서 동일한 gameId 가 있으면 exception 발생.
+        // 현재 email 이 memberGuild 안에 동일하게 있으면 exception 발생.
+        int registrationNumber = 0;
+        for(MemberGuild memberGuild : member.getMemberGuildList()){
+            if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()) {
+                registrationNumber++;
+            }
+        }
+
+        for(MemberGuild memberGuild : member.getMemberGuildList()){
+            if(registrationNumber != 0 && memberGuild.getMemberGuildRoles().contains("MEMBER_GUILD_ROLE_PLAYER")){
+                throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
+            } else if(registrationNumber >= 5) {
+                throw new BusinessLogicException(ExceptionCode.GUILD_REGISTRATION_DENIED);
+            } else if(email.equals(memberGuild.getMember().getEmail())){
+                throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+            }
+        }
+
+        MemberGuild memberGuild = new MemberGuild();
+        memberGuild.setMember(member);
+        memberGuild.setGuild(guild);
+        memberGuild.setNickName(nickName);
 
         guild.addMemberGuild(memberGuild);
 

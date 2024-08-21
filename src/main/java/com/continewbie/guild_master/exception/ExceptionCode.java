@@ -7,7 +7,7 @@ import lombok.Getter;
         MEMBER_EXISTS(409, "Member exists"),
         MEMBER_DIFFERENT(400, "Member Different"),
         GAME_NOT_FOUND(404, "Game not found"),
-        INVALID_MEMBER_STATUS(400, "Invalid member status"),
+        GUILD_REGISTRATION_DENIED(404, "Guild Registration Denied"),
         GUILD_NOT_FOUND(404,"guild not found"),
         GUILD_ALREADY_EXISTS(404,"Guild already exists"),
         EVENT_NOT_FOUND(404, "Event not found"),
