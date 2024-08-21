@@ -47,22 +47,19 @@ public class MemberController {
     }
 
     @PatchMapping("/{member-id}")
-    public ResponseEntity patchMember(@RequestBody @Valid MemberDto.Patch requestBody, Authentication authentication){
-        String email = (String) authentication.getPrincipal();
-        Member member = memberService.findVerifiedEmail(email);
-        Member updatedMember = memberMapper.memberPatchDtoToMember(requestBody);
-        updatedMember.setMemberId(member.getMemberId());
+    public ResponseEntity patchMember(@PathVariable("member-id") long memberId, @RequestBody @Valid MemberDto.Patch requestBody, Authentication authentication){
 
+        Member updatedMember = memberMapper.memberPatchDtoToMember(requestBody);
+        updatedMember.setMemberId(memberId);
         Member savedMember = memberService.updateMember(updatedMember, authentication);
 
         return new ResponseEntity<>(memberMapper.memberToMemberResponse(savedMember),HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity deleteMember(Authentication authentication) {
-        String email = (String) authentication.getPrincipal();
-        Member member = memberService.findVerifiedEmail(email);
-        memberService.deleteMember(authentication);
+    @DeleteMapping("/{member-id}")
+    public ResponseEntity deleteMember(@PathVariable("member-id") long memberId, Authentication authentication) {
+
+        memberService.deleteMember(memberId, authentication);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

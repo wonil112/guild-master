@@ -60,10 +60,15 @@ public class MemberService {
                 .of(page,size, Sort.by("memberId")));
     }
 
-    public void deleteMember(Authentication authentication){
+    public void deleteMember(long memberId, Authentication authentication){
 
-        String email = (String) authentication.getPrincipal();
+        String email = (String)authentication.getPrincipal();
         Member findMember = findVerifiedEmail(email);
+
+        if (findMember.getMemberId() != memberId) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DIFFERENT);  // 예외 발생 처리
+        }
+
         findMember.setDeletedAt(LocalDateTime.now());
         memberRepository.save(findMember);
     }
@@ -72,6 +77,11 @@ public class MemberService {
 
         String email = (String)authentication.getPrincipal();
         Member findMember = findVerifiedEmail(email);
+
+        if (findMember.getMemberId() != member.getMemberId()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DIFFERENT);  // 예외 발생 처리
+        }
+
         Optional.ofNullable(member.getName())
                 .ifPresent( name -> findMember.setName(member.getName()));
         Optional.ofNullable(member.getPassword())
