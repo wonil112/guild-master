@@ -1,16 +1,17 @@
 package com.continewbie.guild_master.event.service;
 
 import com.continewbie.guild_master.event.entity.Event;
+import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import com.continewbie.guild_master.event.repository.EventRepository;
 import com.continewbie.guild_master.exception.BusinessLogicException;
 import com.continewbie.guild_master.exception.ExceptionCode;
-import com.continewbie.guild_master.member.repository.MemberRepository;
 import com.continewbie.guild_master.utils.validator.InvalidEventDateException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,13 +20,13 @@ public class EventService {
 
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
+
     }
 
     public Event createEvent(Event event) {
-        if(event.getStartDate().isAfter(event.getDueDate())){
+        if (event.getStartDate().isAfter(event.getDueDate())) {
             throw new InvalidEventDateException(404, "종료 날짜는 시작 날짜보다 뒤여야 합니다");
         }
-
         return eventRepository.save(event);
     }
 
@@ -43,6 +44,7 @@ public class EventService {
     }
 
     public Event findEvent(long eventId){
+
         return findVerifiedEvent(eventId);
     }
 
@@ -63,9 +65,46 @@ public class EventService {
         return findEvent;
     }
 
+    // 멤버와 게임티어, 선택포지션을 입력 받는 메서드
+    public MemberEvent createAttendee (long eventId, MemberEvent memberEvent){
+
+        Event findEvent = findVerifiedEvent(eventId);
+        verifiedPopulation(findEvent);
+
+        findEvent.setEventCurrentPopulation(findEvent.getEventCurrentPopulation() + 1);
+        List<MemberEvent> findMemberEvents = findEvent.getMemberEvents();
+        findMemberEvents.add(memberEvent);
+        eventRepository.save(findEvent);
+        return memberEvent;
+    }
+
+    //특정 이벤트의 참가자 삭제
+    public void deleteAttendee (long eventId, long memberEventId){
+        Optional<Event> event = eventRepository.findByEventId(eventId);
+        if (event.isPresent()) {
+            Event findEvent = event.get();
+
+            // MemberEvent를 찾기
+            Optional<MemberEvent> memberEventToDelete = findEvent.getMemberEvents().stream()
+                    .filter(memberEvent -> memberEvent.getMemberEventId() == memberEventId)
+                    .findFirst();
+
+            if (memberEventToDelete.isPresent()) {
+                // MemberEvent를 Event에서 삭제
+                findEvent.getMemberEvents().remove(memberEventToDelete.get());
+
+                // Event 저장
+                eventRepository.save(findEvent);
+            } else{
+            throw new BusinessLogicException(ExceptionCode.EVENT_NOT_FOUND);
+            }
+        }
+    }
+
+    //현재 인원수 == 전체 인원수 인데 추가를 하려고 할 때 예외
     public void verifiedPopulation(Event event){
-        // 이벤트 참석 메서드에 들어갈 검증
-        if(event.getEventCurrentPopulation() > event.getEventTotalPopulation()){
+
+        if(event.getEventCurrentPopulation() == event.getEventTotalPopulation()){
             throw new BusinessLogicException(ExceptionCode.EVENT_MAX_PARTICIPANTS);
         }
     }

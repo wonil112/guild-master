@@ -2,9 +2,11 @@ package com.continewbie.guild_master.event.controller;
 
 import com.continewbie.guild_master.dto.MultiResponseDto;
 import com.continewbie.guild_master.event.dto.EventDto;
+import com.continewbie.guild_master.memeberevent.dto.MemberEventDto;
 import com.continewbie.guild_master.event.entity.Event;
+import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import com.continewbie.guild_master.event.mapper.EventMapper;
-import com.continewbie.guild_master.event.repository.EventRepository;
+import com.continewbie.guild_master.memeberevent.mapper.MemberEventMapper;
 import com.continewbie.guild_master.event.service.EventService;
 import com.continewbie.guild_master.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +30,21 @@ public class EventController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
+    private final MemberEventMapper memberEventMapper;
 
-    public EventController(EventService eventService, EventMapper eventMapper) {
+
+
+    public EventController(EventService eventService, EventMapper eventMapper, MemberEventMapper memberEventMapper) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
+        this.memberEventMapper = memberEventMapper;
     }
 
     @PostMapping
     public ResponseEntity postEvent(@Valid @RequestBody EventDto.Post requestBody) {
-        Event event = eventMapper.eventPostDtoToEvent(requestBody);
-        Event createdEvent = eventService.createEvent(event);
-        URI location = UriCreator.createUri(DEFAULT_EVENT_URL, createdEvent.getEventId());
+        Event event = eventService.createEvent(eventMapper.eventPostDtoToEvent(requestBody));
+
+        URI location = UriCreator.createUri(DEFAULT_EVENT_URL, event.getEventId());
         return ResponseEntity.created(location).build();
     }
 
@@ -65,7 +71,7 @@ public class EventController {
     @GetMapping
     public ResponseEntity getEvents(@Positive @RequestParam int page,
                                     @Positive @RequestParam int size) {
-        Page<Event> pageEvents = eventService.findEvents(page -1, size);
+        Page<Event> pageEvents = eventService.findEvents(page - 1, size);
         List<Event> findEvents = pageEvents.getContent();
 
         return new ResponseEntity<>(
@@ -73,4 +79,25 @@ public class EventController {
                         pageEvents), HttpStatus.OK);
     }
 
+    //registration: 특정 이벤트를 참여하는 기능
+    @PostMapping("/{event-id}/registration")
+    public ResponseEntity postAttendee(@PathVariable("event-id") @Positive long eventId,
+                                       @Valid @RequestBody MemberEventDto requestBody) {
+        //MemberEventDto >> entity
+
+        MemberEvent memberEvent = eventService.createAttendee(eventId, memberEventMapper.MemberEventDtoToMemberEvent(requestBody));
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //특정 이벤트 전체 참가자 조회하는 기능
+
+
+    //이벤트 참가 신청 삭제
+    @DeleteMapping("/{event-id}/{memberEvent-id}")
+    public ResponseEntity deleteAttendees(@PathVariable("event-id") @Positive long eventId,
+                                          @PathVariable("memberEvent-id") @Positive long memberEventId) {
+        eventService.deleteAttendee(eventId, memberEventId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

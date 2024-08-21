@@ -2,6 +2,7 @@ package com.continewbie.guild_master.member.controller;
 
 import com.continewbie.guild_master.dto.MultiResponseDto;
 import com.continewbie.guild_master.dto.SingleResponseDto;
+import com.continewbie.guild_master.event.dto.EventDto;
 import com.continewbie.guild_master.member.dto.MemberDto;
 import com.continewbie.guild_master.member.entity.Member;
 import com.continewbie.guild_master.member.mapper.MemberMapper;
@@ -74,6 +75,4 @@ public class MemberController {
         return new ResponseEntity<>(new MultiResponseDto<>(memberMapper
                 .membersToMemberResponses((findMembers)),pageMembers),HttpStatus.OK);
     }
-
-
 }

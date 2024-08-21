@@ -2,7 +2,7 @@ package com.continewbie.guild_master.event.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
 import com.continewbie.guild_master.guild.entity.Guild;
-import com.continewbie.guild_master.member.entity.MemberEvent;
+import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -45,6 +45,13 @@ public class Event extends Auditable {
     @ManyToOne
     @JoinColumn(name = "guild_id")
     private Guild guild;
+
+    public void setGuild(Guild guild){
+        this.guild = guild;
+        if(!guild.getEventList().contains(this)){
+            guild.setEvent(this);
+        }
+    }
     
 
     public void addMemberEvent(MemberEvent memberEvent){
