@@ -50,6 +50,9 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+
+                        .antMatchers(HttpMethod.POST, "/*/guilds/*").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/*/guilds/*/registration").hasRole("USER")
                         .anyRequest().permitAll());
         return http.build();
     }

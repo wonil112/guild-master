@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,14 +22,17 @@ public class MemberGuild extends Auditable {
     private long memberGuildId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "guild_id")
+    @JoinColumn(name = "GUILD_ID")
     private Guild guild;
 
     private String nickName;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<MemberGuildRole> memberGuildRoles = new ArrayList<>();
 
     public void addMember(Member member){
         this.member = member;
@@ -37,5 +41,28 @@ public class MemberGuild extends Auditable {
         }
     }
 
+    public void addGuild(Guild guild){
+        this.guild = guild;
+        if(!this.guild.getMemberGuildList().contains(this)){
+            this.guild.addMemberGuild(this);
+        }
+    }
+
+    public enum MemberGuildRole {
+        MEMBER_GUILD_ROLE_PLAYER(1, "일반 길드원"),
+        MEMBER_GUILD_ROLE_MANAGER(2, "운영진"),
+        MEMBER_GUILD_ROLE_MASTER(3, "길드 마스터");
+
+        @Getter
+        private int GuildRoleNumber;
+
+        @Getter
+        private String GuildRoleDescription;
+
+        MemberGuildRole(int guildRoleNumber, String guildRoleDescription) {
+            GuildRoleNumber = guildRoleNumber;
+            GuildRoleDescription = guildRoleDescription;
+        }
+    }
 
 }

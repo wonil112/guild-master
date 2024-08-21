@@ -23,6 +23,12 @@ public class JwtAuthorityUtils {
     private final List<String> USER_ROLES_STRING =
             List.of("USER");
 
+    public List<GrantedAuthority> createAuthorities(String email) {
+        if(email.equals(adminMailAddress)) {
+            return ADMIN_ROLES;
+        } return USER_ROLES;
+    }
+
     public List<GrantedAuthority> createAuthorities (List<String> roles) {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_"+ role))

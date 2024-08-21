@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,6 @@ public class MemberService {
     private final ApplicationEventPublisher publisher;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthorityUtils authorityUtils;
-
 
     public MemberService(MemberRepository memberRepository, ApplicationEventPublisher publisher, PasswordEncoder passwordEncoder, JwtAuthorityUtils authorityUtils) {
         this.memberRepository = memberRepository;
@@ -51,7 +51,7 @@ public class MemberService {
     }
 
     public Member findMember(long memberId){
-        Member findMember = verifyFindIdMember(memberId);
+        Member findMember = verifyFindMemberId(memberId);
         return findMember;
     }
 
@@ -60,16 +60,28 @@ public class MemberService {
                 .of(page,size, Sort.by("memberId")));
     }
 
-    public void deleteMember(long memberId){
-//      verifyFindIdMember() =  repository에서 memberId로 존재여부를 검증한 뒤 해당 Member를 반환하는 메서드
-        Member findMember = verifyFindIdMember(memberId);
+    public void deleteMember(long memberId, Authentication authentication){
+
+        String email = (String)authentication.getPrincipal();
+        Member findMember = findVerifiedEmail(email);
+
+        if (findMember.getMemberId() != memberId) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DIFFERENT);  // 예외 발생 처리
+        }
+
         findMember.setDeletedAt(LocalDateTime.now());
         memberRepository.save(findMember);
-        
     }
 
-    public Member updateMember(Member member){
-        Member findMember = verifyFindIdMember(member.getMemberId());
+    public Member updateMember(Member member, Authentication authentication){
+
+        String email = (String)authentication.getPrincipal();
+        Member findMember = findVerifiedEmail(email);
+
+        if (findMember.getMemberId() != member.getMemberId()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DIFFERENT);  // 예외 발생 처리
+        }
+
         Optional.ofNullable(member.getName())
                 .ifPresent( name -> findMember.setName(member.getName()));
         Optional.ofNullable(member.getPassword())
@@ -81,14 +93,21 @@ public class MemberService {
     }
 
 
-    private void verifyExistsEmail(String email){
+    public void verifyExistsEmail(String email){
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()){
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
         }
     }
+    public Member findVerifiedEmail(String email){
+        Optional<Member> optionalMember= memberRepository.findByEmail(email);
+        Member findMember  = optionalMember.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        return findMember;
+    }
 
-    private Member verifyFindIdMember(long memberId){
+
+    public Member verifyFindMemberId(long memberId){
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         Member findMember  = optionalMember.orElseThrow(() ->
                     new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
@@ -96,10 +115,7 @@ public class MemberService {
         if(findMember.getDeletedAt() != null ){
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
-
         return findMember;
     }
-
-
 
 }
