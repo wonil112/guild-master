@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,16 +47,23 @@ public class MemberController {
     }
 
     @PatchMapping("/{member-id}")
-    public ResponseEntity patchMember(@PathVariable("member-id") @Positive long memberId,   @RequestBody @Valid MemberDto.Patch requestBody){
-        requestBody.setMemberId(memberId);
-        Member member = memberMapper.memberPatchDtoToMember(requestBody);
-        Member updatedMember = memberService.updateMember(member);
-        return new ResponseEntity<>(memberMapper.memberToMemberResponse(updatedMember),HttpStatus.OK);
+    public ResponseEntity patchMember(@RequestBody @Valid MemberDto.Patch requestBody, Authentication authentication){
+        String email = (String) authentication.getPrincipal();
+        Member member = memberService.findVerifiedEmail(email);
+        Member updatedMember = memberMapper.memberPatchDtoToMember(requestBody);
+        updatedMember.setMemberId(member.getMemberId());
+
+        Member savedMember = memberService.updateMember(updatedMember, authentication);
+
+        return new ResponseEntity<>(memberMapper.memberToMemberResponse(savedMember),HttpStatus.OK);
     }
 
-    @DeleteMapping("/{member-id}")
-    public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId) {
-        memberService.deleteMember(memberId);
+    @DeleteMapping
+    public ResponseEntity deleteMember(Authentication authentication) {
+        String email = (String) authentication.getPrincipal();
+        Member member = memberService.findVerifiedEmail(email);
+        memberService.deleteMember(authentication);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

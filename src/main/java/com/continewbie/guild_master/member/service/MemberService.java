@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,16 +60,18 @@ public class MemberService {
                 .of(page,size, Sort.by("memberId")));
     }
 
-    public void deleteMember(long memberId){
-//      verifyFindIdMember() =  repository에서 memberId로 존재여부를 검증한 뒤 해당 Member를 반환하는 메서드
-        Member findMember = verifyFindMemberId(memberId);
+    public void deleteMember(Authentication authentication){
+
+        String email = (String) authentication.getPrincipal();
+        Member findMember = findVerifiedEmail(email);
         findMember.setDeletedAt(LocalDateTime.now());
         memberRepository.save(findMember);
-        
     }
 
-    public Member updateMember(Member member){
-        Member findMember = verifyFindMemberId(member.getMemberId());
+    public Member updateMember(Member member, Authentication authentication){
+
+        String email = (String)authentication.getPrincipal();
+        Member findMember = findVerifiedEmail(email);
         Optional.ofNullable(member.getName())
                 .ifPresent( name -> findMember.setName(member.getName()));
         Optional.ofNullable(member.getPassword())

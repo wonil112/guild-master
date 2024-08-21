@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,14 +37,13 @@ public class GuildController {
     }
 
 
-    @PostMapping
-    public ResponseEntity postGuild(@Valid @RequestBody GuildDto.Post requestBody, Authentication authentication) {
-
+    @PostMapping()
+    public ResponseEntity postMember(@Valid @RequestBody GuildDto.Post requestBody) {
         Guild guild = guildMapper.guildPostDtoToGuild(requestBody);
-        Guild createdGuild = guildService.createGuild(guild, authentication);
+        Guild createdGuild = guildService.createGuild(guild);
         URI location = UriCreator.createUri(DEFAULT_GUILD_URL, createdGuild.getGuildId());
-
         return ResponseEntity.created(location).build();
+
     }
 
     @PatchMapping("/{guild-id}")
