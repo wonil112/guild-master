@@ -1,9 +1,8 @@
-package com.continewbie.guild_master.event.dto;
+package com.continewbie.guild_master.memeberevent.dto;
 
 import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.member.entity.Member;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.Positive;
 

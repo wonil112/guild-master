@@ -1,6 +1,7 @@
-package com.continewbie.guild_master.event.entity;
+package com.continewbie.guild_master.memeberevent.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
+import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
