@@ -80,4 +80,6 @@ public class MemberController {
         return new ResponseEntity<>(new MultiResponseDto<>(memberMapper
                 .membersToMemberResponses((findMembers)),pageMembers),HttpStatus.OK);
     }
+
+
 }

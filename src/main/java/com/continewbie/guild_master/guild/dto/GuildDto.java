@@ -1,5 +1,6 @@
 package com.continewbie.guild_master.guild.dto;
 
+import com.continewbie.guild_master.memberguild.dto.MemberGuildDto;
 import com.continewbie.guild_master.utils.validator.NotSpace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class GuildDto {
 
@@ -41,7 +43,23 @@ public class GuildDto {
 
     @Getter
     @AllArgsConstructor
-    public static class Response {
+    public static class GuildMemberResponse {
+        private long guildId;
+        private long gameId;
+        private String guildName;
+        private String guildMasterName;
+        private int guildTotalPopulation;
+        private int guildCurrentPopulation;
+        private String guildContent;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
+        private LocalDateTime deletedAt;
+        private List<MemberGuildDto.Response> memberGuildDtos;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class GuildResponse {
         private long guildId;
         private long gameId;
         private String guildName;

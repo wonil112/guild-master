@@ -1,6 +1,8 @@
 package com.continewbie.guild_master.member.dto;
 
 
+import com.continewbie.guild_master.memberguild.dto.MemberGuildDto;
+import com.continewbie.guild_master.memberguild.entity.MemberGuild;
 import com.continewbie.guild_master.utils.validator.NotSpace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -65,6 +67,7 @@ public class MemberDto {
     @AllArgsConstructor
     public static class Response{
         private long memberId;
+        private List<MemberGuildDto.Response> memberGuilds;
         private String name;
         private String email;
         private String phone;
