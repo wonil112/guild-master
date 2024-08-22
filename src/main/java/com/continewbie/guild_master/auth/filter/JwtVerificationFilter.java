@@ -2,8 +2,10 @@ package com.continewbie.guild_master.auth.filter;
 
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
 import com.continewbie.guild_master.auth.utils.JwtAuthorityUtils;
+import com.continewbie.guild_master.member.entity.Member;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,14 +19,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final JwtAuthorityUtils jwtAuthorityUtils;
+    private final RedisTemplate redisTemplate;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils, RedisTemplate redisTemplate) {
         this.jwtTokenizer = jwtTokenizer;
         this.jwtAuthorityUtils = jwtAuthorityUtils;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -32,9 +37,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         // 검증된 claims 를 데리고 와서
         try {
             Map<String, Object> claims = verifyJws(request);
+            isTokenValidInRedis(claims);
             setAuthenticationToContext(claims);
         } catch (SignatureException se) {
             request.setAttribute("exception", se);
+        } catch (NullPointerException ne) {
+            request.setAttribute("exception", ne);
         } catch (ExpiredJwtException ee) {
             request.setAttribute("exception", ee);
         } catch (Exception e) {
@@ -68,5 +76,17 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 username, null, authorities);
         //Security Context 에 만든 authentication 을 넣음.
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    // Redis에서 토큰을 검증하는 메서드 추가
+    private boolean isTokenValidInRedis(Map<String, Object> claims) {
+        String username = (String) claims.get("username");
+
+        // Redis에 해당 키(username)가 존재하는지 확인하고 Optional로 처리
+        Boolean hasKey = Optional.ofNullable(redisTemplate.hasKey(username))
+                .orElseThrow(() -> new NullPointerException("Redis key check returned null"));
+
+        // 키가 존재하면 true 반환
+        return hasKey;
     }
 }

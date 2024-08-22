@@ -6,8 +6,10 @@ import com.continewbie.guild_master.auth.handler.MemberAuthenticationFailureHand
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationSuccessHandler;
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
 import com.continewbie.guild_master.auth.utils.JwtAuthorityUtils;
+import com.continewbie.guild_master.member.service.MemberService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +30,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final JwtAuthorityUtils jwtAuthorityUtils;
+    private final RedisTemplate redisTemplate;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils, RedisTemplate redisTemplate) {
         this.jwtTokenizer = jwtTokenizer;
         this.jwtAuthorityUtils = jwtAuthorityUtils;
+        this.redisTemplate = redisTemplate;
     }
 
     @Bean
@@ -77,11 +81,11 @@ public class SecurityConfiguration {
         public void configure (HttpSecurity builder) {
             AuthenticationManager authenticationManager =
                     builder.getSharedObject(AuthenticationManager.class);
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, redisTemplate);
             jwtAuthenticationFilter.setFilterProcessesUrl("/members/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils, redisTemplate);
 
             builder.addFilter(jwtAuthenticationFilter)
                     // Authentication 다음에 Verification 필터를 실행해라
