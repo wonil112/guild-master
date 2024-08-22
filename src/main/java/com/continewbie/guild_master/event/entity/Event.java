@@ -2,6 +2,7 @@ package com.continewbie.guild_master.event.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
 import com.continewbie.guild_master.guild.entity.Guild;
+import com.continewbie.guild_master.memeberevent.dto.MemberEventResponseDto;
 import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,8 +40,13 @@ public class Event extends Auditable {
     @Column(nullable = false)
     private LocalDateTime dueDate;
 
+    @Setter
+    @Column(name = "GOT_AT")
+    private LocalDateTime gotAt;
+
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberEvent> memberEvents = new ArrayList<>();
+
 
     @ManyToOne
     @JoinColumn(name = "guild_id")

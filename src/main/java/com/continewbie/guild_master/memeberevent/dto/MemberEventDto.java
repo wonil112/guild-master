@@ -3,7 +3,9 @@ package com.continewbie.guild_master.memeberevent.dto;
 import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.member.entity.Member;
 import lombok.Getter;
+import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 @Getter
@@ -13,11 +15,13 @@ public class MemberEventDto {
     @Positive
     private long eventId;
 
-    @Positive
+    @Setter
     private long memberId;
 
+    @NotBlank
     private String gameTier;
 
+    @NotBlank
     private String selectedPosition;
 
     public Member getMember(){

@@ -31,6 +31,7 @@ public class MemberGuild extends Auditable {
 
     private String nickName;
 
+    @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
     private List<MemberGuildRole> memberGuildRoles = new ArrayList<>();
 

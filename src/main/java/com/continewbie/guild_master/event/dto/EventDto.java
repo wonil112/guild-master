@@ -75,12 +75,12 @@ public class  EventDto {
     @Setter
     public static class Response {
         private long eventId;
-        private long guildId; // guildId 필요할까?
+        private long gameId;
+        private long guildId; // guildId 필요할까? 일단 알기 쉽게 적어두자.
         private String eventName;
         private String eventContent;
         private int eventTotalPopulation;
         private int eventCurrentPopulation;
-        private List<MemberEventResponseDto> memberEventResponseDtos;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime startDate;

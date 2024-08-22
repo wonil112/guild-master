@@ -28,5 +28,4 @@ public abstract class Auditable {
     private LocalDateTime deletedAt;
 
 
-
 }
