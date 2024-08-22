@@ -1,8 +1,10 @@
 package com.continewbie.guild_master.auth.filter;
 
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
+import com.continewbie.guild_master.auth.service.TokenBlacklistService;
 import com.continewbie.guild_master.auth.utils.JwtAuthorityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,18 +23,26 @@ import java.util.Map;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final JwtAuthorityUtils jwtAuthorityUtils;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils, TokenBlacklistService tokenBlacklistService) {
         this.jwtTokenizer = jwtTokenizer;
         this.jwtAuthorityUtils = jwtAuthorityUtils;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 검증된 claims 를 데리고 와서
         try {
-            Map<String, Object> claims = verifyJws(request);
+            String jws = request.getHeader("Authorization").replace("Bearer ", "");
+            String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+            Map<String, Object> claims = verifyJws(jws, base64EncodedSecretKey);
             setAuthenticationToContext(claims);
+
+            if(tokenBlacklistService.isBlacklisted(jws)) {
+                throw new JwtException("만료된 토큰입니다.");
+            }
         } catch (SignatureException se) {
             request.setAttribute("exception", se);
         } catch (ExpiredJwtException ee) {
@@ -51,11 +61,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     // 요청 헤더에서 Jws 를 데리고 옴.
     // getClaims 로 검증을 함.
-    private Map<String, Object> verifyJws(HttpServletRequest request) {
-        String jws = request.getHeader("Authorization").replace("Bearer ", "");
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+    private Map<String, Object> verifyJws(String jws, String base64EncodedSecretKey) {
         // 검증된 claims 를 받음. claims 에 있는 body 를 데리고 오기 때문에 getBody()
-        Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
+        Map<String, Object> claims = jwtTokenizer.verifySignature(jws, base64EncodedSecretKey).getBody();
         return claims;
     }
 

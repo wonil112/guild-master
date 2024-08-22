@@ -69,20 +69,9 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    //검증된 jwt만 받아짐.
-    public Jws<Claims> getClaims(String jws, String baseEncodedSecretKey) {
-        Key key = getKeyFromBase64EncodeKey(baseEncodedSecretKey);
-        Jws<Claims> claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jws);
-
-        return claims;
-    }
-
-    public void verifySignature(String jws, String base64EncodedSecretKey) {
+    public Jws<Claims> verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodeKey(base64EncodedSecretKey);
-        Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jws);

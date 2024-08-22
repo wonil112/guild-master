@@ -5,22 +5,41 @@ import com.continewbie.guild_master.auth.filter.JwtVerificationFilter;
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationFailureHandler;
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationSuccessHandler;
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
+import com.continewbie.guild_master.auth.service.TokenBlacklistService;
 import com.continewbie.guild_master.auth.utils.JwtAuthorityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.GenericFilterBean;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -28,16 +47,16 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final JwtAuthorityUtils jwtAuthorityUtils;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils, TokenBlacklistService tokenBlacklistService) {
         this.jwtTokenizer = jwtTokenizer;
         this.jwtAuthorityUtils = jwtAuthorityUtils;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // h2 웹 콘솔 화면 자체가 내부적으로 <frame> 을 사용하고 있음. 이를 정상적으로 수행하도록 함.
-        // 동일 출처로부터 들어오는 요청만 페이지 렌더링을 허용.
         http
                 .headers().frameOptions().sameOrigin()
                 .and()
@@ -50,6 +69,7 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.POST, "/*/members/logout").permitAll()
 
                         .antMatchers(HttpMethod.POST, "/*/guilds/*").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/*/guilds/*/registration").hasRole("USER")
@@ -64,8 +84,10 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -73,6 +95,7 @@ public class SecurityConfiguration {
     }
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
+
         @Override
         public void configure (HttpSecurity builder) {
             AuthenticationManager authenticationManager =
@@ -81,13 +104,12 @@ public class SecurityConfiguration {
             jwtAuthenticationFilter.setFilterProcessesUrl("/members/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils, tokenBlacklistService);
 
             builder.addFilter(jwtAuthenticationFilter)
                     // Authentication 다음에 Verification 필터를 실행해라
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
     }
-
 }
 

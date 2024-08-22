@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = delegateRefreshToken(member);
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
+        response.setHeader("memberId", String.valueOf(member.getMemberId()));
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }
 
@@ -53,6 +54,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         claims.put("username", member.getEmail());
         claims.put("roles", member.getRoles());
         claims.put("memberId", member.getMemberId());
+        // 여기에 deletedAt 넣어서 deletedAt 있으면 로그아웃. 로그아웃 시점에 deletedAt 넣음
+        // 사용할 때 filter 에서 유효성 체크
+        // auth_token(id, member_id, access_token, refresh_token, created_at, updated_at, deleted_at) 만들어서 DB에 토큰 저장.
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
