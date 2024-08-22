@@ -1,6 +1,7 @@
 package com.continewbie.guild_master.member.entity;
 
 import com.continewbie.guild_master.auditable.Auditable;
+import com.continewbie.guild_master.memberguild.entity.MemberGuild;
 import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class Member extends Auditable {
     @Column(length = 100, nullable = false)
     private String password;
 
-    @Column(length = 13, nullable = false)
+    @Column(length = 13, nullable = false, unique = true)
     private String phone;
 
     @ElementCollection(fetch = FetchType.EAGER)

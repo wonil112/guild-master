@@ -11,7 +11,11 @@ import lombok.Getter;
         GUILD_NOT_FOUND(404,"guild not found"),
         GUILD_ALREADY_EXISTS(404,"Guild already exists"),
         EVENT_NOT_FOUND(404, "Event not found"),
-        EVENT_MAX_PARTICIPANTS(400, "CurrentPopulation Over TotalPopulation");
+        EVENT_MAX_PARTICIPANTS(400, "CurrentPopulation Over TotalPopulation"),
+        NO_PERMISSION(404,"No Permission"),
+        GUILD_REGISTRATION_COUNT_MAX(404,"Guild registration is full"),
+        ALREADY_PHONE_EXISTS(404,"Already Phone Exists"),
+        ALREADY_EMAIL_EXISTS(404,"Already Email Exists");
         @Getter
         private int status;
 

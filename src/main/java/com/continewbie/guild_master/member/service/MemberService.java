@@ -37,6 +37,7 @@ public class MemberService {
 
     public Member createMember(Member member){;
         verifyExistsEmail(member.getEmail());
+        verifyExistsPhone(member.getPhone());
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
@@ -96,7 +97,7 @@ public class MemberService {
     public void verifyExistsEmail(String email){
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()){
-            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+            throw new BusinessLogicException(ExceptionCode.ALREADY_EMAIL_EXISTS);
         }
     }
     public Member findVerifiedEmail(String email){
@@ -104,6 +105,13 @@ public class MemberService {
         Member findMember  = optionalMember.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         return findMember;
+    }
+
+    public void verifyExistsPhone(String phone){
+        Optional<Member> member = memberRepository.findByPhone(phone);
+        if (member.isPresent()){
+            throw new BusinessLogicException(ExceptionCode.ALREADY_PHONE_EXISTS);
+        }
     }
 
 
