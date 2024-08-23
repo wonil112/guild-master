@@ -3,8 +3,7 @@ package com.continewbie.guild_master.event.controller;
 import com.continewbie.guild_master.dto.MultiResponseDto;
 import com.continewbie.guild_master.dto.SingleResponseDto;
 import com.continewbie.guild_master.event.dto.EventDto;
-import com.continewbie.guild_master.game.entity.Game;
-import com.continewbie.guild_master.guild.entity.Guild;
+
 import com.continewbie.guild_master.guild.service.GuildService;
 import com.continewbie.guild_master.member.entity.Member;
 import com.continewbie.guild_master.member.service.MemberService;
@@ -16,7 +15,6 @@ import com.continewbie.guild_master.event.mapper.EventMapper;
 import com.continewbie.guild_master.memeberevent.mapper.MemberEventMapper;
 import com.continewbie.guild_master.event.service.EventService;
 import com.continewbie.guild_master.memeberevent.repository.MemberEventRepository;
-import com.continewbie.guild_master.position.entity.Position;
 import com.continewbie.guild_master.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
