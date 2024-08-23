@@ -3,6 +3,8 @@ package com.continewbie.guild_master.member.dto;
 
 import com.continewbie.guild_master.memberguild.dto.MemberGuildDto;
 import com.continewbie.guild_master.memberguild.entity.MemberGuild;
+import com.continewbie.guild_master.memeberevent.dto.MemberEventDto;
+import com.continewbie.guild_master.memeberevent.dto.MemberEventResponseDto;
 import com.continewbie.guild_master.utils.validator.NotSpace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -74,5 +76,11 @@ public class MemberDto {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private LocalDateTime deletedAt;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class MemberEventResponse{
+        private List<MemberEventResponseDto> memberEventResponseDtos;
     }
 }

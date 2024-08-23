@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberEventResponseDto {
-
     private long memberId;
     private long eventId;
     private String gameCode;

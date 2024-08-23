@@ -48,6 +48,10 @@ public interface MemberMapper {
                 memberGuild.getMemberGuildId(),
                 memberGuild.getMember().getMemberId(),
                 memberGuild.getGuild().getGuildId(),
+                memberGuild.getGuild().getGame().getGameId(),
+                memberGuild.getGuild().getGuildName(),
+                memberGuild.getGuild().getGuildTotalPopulation(),
+                memberGuild.getGuild().getGuildCurrentPopulation(),
                 memberGuild.getNickName(),
                 memberGuild.getCreatedAt(),
                 memberGuild.getDeletedAt(),
@@ -55,6 +59,7 @@ public interface MemberMapper {
                 memberGuild.getMemberGuildStatuses()
         );
         return memberGuildResponseDto;
+  
     }
 
 }

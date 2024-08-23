@@ -3,6 +3,7 @@ package com.continewbie.guild_master.memberguild.dto;
 import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.member.entity.Member;
 import com.continewbie.guild_master.memberguild.entity.MemberGuild;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,8 +42,14 @@ public class MemberGuildDto {
         private long memberGuildId;
         private long memberId;
         private long guildId;
+        private long gameId;
+        private String guildName;
+        private int guildTotalPopulation;
+        private int guildCurrentPopulation;
         private String nickName;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime createdAt;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime deletedAt;
         private List<MemberGuild.MemberGuildRole> memberGuildRoles;
         private List<MemberGuild.MemberGuildStatus> memberGuildStatuses;

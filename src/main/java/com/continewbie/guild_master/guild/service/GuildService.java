@@ -41,17 +41,6 @@ public class GuildService {
         String email = (String) authentication.getPrincipal();
         Member member = memberService.findVerifiedEmail(email);
 
-        // 해당 member 의 memberGuild 를 조회해서 동일한 gameId 가 있으면 exception 발생.
-        // 현재 email 이 memberGuild 안에 동일하게 있으면 exception 발생.
-        for(MemberGuild memberGuild : member.getMemberGuildList()){
-            if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()){
-                throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
-            }
-            else if(email.equals(memberGuild.getMember().getEmail())){
-            } else if(email.equals(memberGuild.getMember().getEmail())){
-                throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
-            }
-        }
 
         // 생성하려는 길드의 이름이 동일한 게임 내에 존재하는지 확인하는 코드
         Optional<Guild> findGuild = guildRepository.findByGameIdAndGuildName(

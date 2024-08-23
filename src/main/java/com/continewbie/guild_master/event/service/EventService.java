@@ -222,7 +222,16 @@ public class EventService {
         return positionCounts;
     }
 
+
+    public Event verifyFindEvent(long memberId){
+
+        Event findEvent = eventRepository
+                .findByMemberId(memberId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.EVENT_NOT_FOUND));
+
+         return findEvent;
+    }
     // (유효성 검증) 현재 인원수 == 전체 인원수 인데 추가를 하려고 할 때 예외
+
     public void verifiedPopulation(Event event){
 
         if(event.getEventCurrentPopulation() == event.getEventTotalPopulation()){
