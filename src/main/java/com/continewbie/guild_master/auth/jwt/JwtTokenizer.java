@@ -119,7 +119,8 @@ public class JwtTokenizer {
         Date expiration = calendar.getTime();
         return expiration;
     }
-    // 로그아웃시 레디스에서 email을 기준으로 토큰 값 삭제
+
+    // 로그아웃시 레디스에서 email(username) 을 기준으로 토큰 값 삭제
     public boolean deleteRegisterToken(String username) {
         return Optional.ofNullable(redisTemplate.hasKey(username))
                 .filter(Boolean::booleanValue) // 키가 존재할 때만 진행

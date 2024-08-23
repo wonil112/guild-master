@@ -2,6 +2,8 @@ package com.continewbie.guild_master.config;
 
 import com.continewbie.guild_master.auth.filter.JwtAuthenticationFilter;
 import com.continewbie.guild_master.auth.filter.JwtVerificationFilter;
+import com.continewbie.guild_master.auth.handler.MemberAccessDeniedHandler;
+import com.continewbie.guild_master.auth.handler.MemberAuthenticationEntryPoint;
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationFailureHandler;
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationSuccessHandler;
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
@@ -38,6 +40,8 @@ public class SecurityConfiguration {
         this.redisTemplate = redisTemplate;
     }
 
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // h2 웹 콘솔 화면 자체가 내부적으로 <frame> 을 사용하고 있음. 이를 정상적으로 수행하도록 함.
@@ -51,12 +55,18 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint( new MemberAuthenticationEntryPoint())
+                .accessDeniedHandler(new MemberAccessDeniedHandler())
+                .and()
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-
-                        .antMatchers(HttpMethod.POST, "/*/guilds/*").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/*/guilds/*/registration").hasRole("USER")
+                        .antMatchers(HttpMethod.POST,"/members").permitAll()
+                        .antMatchers(HttpMethod.POST,"/members/**").permitAll()
+                        .antMatchers(HttpMethod.POST, "/guilds/*").hasRole("USER")
+                        .antMatchers(HttpMethod.GET,"/guilds/*").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/guilds/*/registration").hasRole("USER")
                         .anyRequest().permitAll());
         return http.build();
     }
@@ -70,6 +80,8 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+//        POST 요청일 때 헤더에 해당 키 사용 가능 리스폰스에 노출을 안시키는걸 임의로 노출 가능하게 설정
+        configuration.setExposedHeaders(Arrays.asList("Authorization","memberId"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -78,7 +90,7 @@ public class SecurityConfiguration {
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
         @Override
-        public void configure (HttpSecurity builder) {
+        public void configure (HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager =
                     builder.getSharedObject(AuthenticationManager.class);
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, redisTemplate);
@@ -87,9 +99,11 @@ public class SecurityConfiguration {
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils, redisTemplate);
 
+
             builder.addFilter(jwtAuthenticationFilter)
                     // Authentication 다음에 Verification 필터를 실행해라
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+
         }
     }
 
