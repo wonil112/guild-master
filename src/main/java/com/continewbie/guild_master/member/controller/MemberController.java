@@ -21,6 +21,7 @@ import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/members")
 @Validated
@@ -80,4 +81,6 @@ public class MemberController {
         return new ResponseEntity<>(new MultiResponseDto<>(memberMapper
                 .membersToMemberResponses((findMembers)),pageMembers),HttpStatus.OK);
     }
+
+
 }

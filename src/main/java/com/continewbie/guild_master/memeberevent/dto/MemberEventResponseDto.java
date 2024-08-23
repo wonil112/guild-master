@@ -15,5 +15,4 @@ public class MemberEventResponseDto {
     private String gameCode;
     private String gameTier;
     private String selectedPosition;
-
 }

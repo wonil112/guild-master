@@ -2,12 +2,16 @@ package com.continewbie.guild_master.config;
 
 import com.continewbie.guild_master.auth.filter.JwtAuthenticationFilter;
 import com.continewbie.guild_master.auth.filter.JwtVerificationFilter;
+import com.continewbie.guild_master.auth.handler.MemberAccessDeniedHandler;
+import com.continewbie.guild_master.auth.handler.MemberAuthenticationEntryPoint;
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationFailureHandler;
 import com.continewbie.guild_master.auth.handler.MemberAuthenticationSuccessHandler;
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
 import com.continewbie.guild_master.auth.utils.JwtAuthorityUtils;
+import com.continewbie.guild_master.member.service.MemberService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,11 +32,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final JwtAuthorityUtils jwtAuthorityUtils;
+    private final RedisTemplate redisTemplate;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, JwtAuthorityUtils jwtAuthorityUtils, RedisTemplate redisTemplate) {
         this.jwtTokenizer = jwtTokenizer;
         this.jwtAuthorityUtils = jwtAuthorityUtils;
+        this.redisTemplate = redisTemplate;
     }
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,12 +55,18 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint( new MemberAuthenticationEntryPoint())
+                .accessDeniedHandler(new MemberAccessDeniedHandler())
+                .and()
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-
-                        .antMatchers(HttpMethod.POST, "/*/guilds/*").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/*/guilds/*/registration").hasRole("USER")
+                        .antMatchers(HttpMethod.POST,"/members").permitAll()
+                        .antMatchers(HttpMethod.POST,"/members/**").permitAll()
+                        .antMatchers(HttpMethod.POST, "/guilds/*").hasRole("USER")
+                        .antMatchers(HttpMethod.GET,"/guilds/*").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/guilds/*/registration").hasRole("USER")
                         .anyRequest().permitAll());
         return http.build();
     }
@@ -64,8 +78,12 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+
+//        POST 요청일 때 헤더에 해당 키 사용 가능 리스폰스에 노출을 안시키는걸 임의로 노출 가능하게 설정
+        configuration.setExposedHeaders(Arrays.asList("Authorization","memberId"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -74,18 +92,20 @@ public class SecurityConfiguration {
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
         @Override
-        public void configure (HttpSecurity builder) {
+        public void configure (HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager =
                     builder.getSharedObject(AuthenticationManager.class);
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, redisTemplate);
             jwtAuthenticationFilter.setFilterProcessesUrl("/members/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, jwtAuthorityUtils, redisTemplate);
+
 
             builder.addFilter(jwtAuthenticationFilter)
                     // Authentication 다음에 Verification 필터를 실행해라
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+
         }
     }
 

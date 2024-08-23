@@ -31,6 +31,7 @@ import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/events")
 @Validated

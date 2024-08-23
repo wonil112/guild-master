@@ -7,13 +7,20 @@ import lombok.Getter;
         MEMBER_EXISTS(409, "Member exists"),
         MEMBER_DIFFERENT(400, "Member Different"),
         GAME_NOT_FOUND(404, "Game not found"),
-        INVALID_MEMBER_STATUS(400, "Invalid member status"),
+        GUILD_REGISTRATION_DENIED(404, "Guild Registration Denied"),
         GUILD_NOT_FOUND(404,"guild not found"),
         GUILD_ALREADY_EXISTS(404,"Guild already exists"),
         EVENT_NOT_FOUND(404, "Event not found"),
         EVENT_MAX_PARTICIPANTS(400, "CurrentPopulation Over TotalPopulation"),
+<<<<<<< HEAD
         EVENT_NOT_PERMISSION(404, "Event Not Permission"),
         EVENT_ALREADY_ATTEND(400, "Event Already Attend");
+=======
+        NO_PERMISSION(404,"No Permission"),
+        GUILD_REGISTRATION_COUNT_MAX(404,"Guild registration is full"),
+        ALREADY_PHONE_EXISTS(404,"Already Phone Exists"),
+        ALREADY_EMAIL_EXISTS(404,"Already Email Exists");
+>>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
         @Getter
         private int status;
 

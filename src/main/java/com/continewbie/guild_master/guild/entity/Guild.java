@@ -3,7 +3,7 @@ package com.continewbie.guild_master.guild.entity;
 import com.continewbie.guild_master.auditable.Auditable;
 import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.game.entity.Game;
-import com.continewbie.guild_master.member.entity.MemberGuild;
+import com.continewbie.guild_master.memberguild.entity.MemberGuild;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

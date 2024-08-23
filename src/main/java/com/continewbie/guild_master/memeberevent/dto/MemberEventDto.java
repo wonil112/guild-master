@@ -11,7 +11,7 @@ import javax.validation.constraints.Positive;
 @Getter
 public class MemberEventDto {
 
-    //PathVariable로 받은 eventId를 받아서 MemberEvent가 갖고 있는 Event 객체에 넣어주기 위해 추가.
+    //PathVariable로 eventId를 받아서 MemberEvent가 갖고 있는 Event 객체에 넣어주기 위해 추가.
     @Positive
     private long eventId;
 
