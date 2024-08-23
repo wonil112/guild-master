@@ -6,6 +6,7 @@ import com.continewbie.guild_master.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 
@@ -18,12 +19,12 @@ public class MemberEvent extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long memberEventId;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", referencedColumnName = "eventId")
     private Event event;
 
     @Column(nullable = false)
@@ -35,14 +36,14 @@ public class MemberEvent extends Auditable {
     public void addMember(Member member) {
         this.member = member;
         if (member != null && !member.getMemberEvents().contains(this)) {
-            this.member.getMemberEvents().add(this);
+            this.member.addMemberEvent(this);
         }
     }
 
     public void addEvent(Event event) {
         this.event = event;
         if (event != null && !event.getMemberEvents().contains(this)) {
-            this.event.getMemberEvents().add(this);
+            this.event.addMemberEvent(this);
         }
     }
 }

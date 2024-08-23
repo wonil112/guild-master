@@ -4,10 +4,7 @@ import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventDto;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventResponseDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
@@ -51,8 +48,8 @@ public class  EventDto {
 
     }
 
-    @Getter
     @AllArgsConstructor
+    @Getter
     public static class Patch {
         private long eventId;
 
@@ -69,18 +66,16 @@ public class  EventDto {
         public void setEventId(long eventId) {this.eventId = eventId;}
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
     @Setter
+    @Getter
     public static class Response {
         private long eventId;
-        private long guildId; // guildId 필요할까?
+        private long gameId;
+        private long guildId; // guildId 필요할까? 일단 알기 쉽게 적어두자.
         private String eventName;
         private String eventContent;
         private int eventTotalPopulation;
         private int eventCurrentPopulation;
-        private List<MemberEventResponseDto> memberEventResponseDtos;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime startDate;

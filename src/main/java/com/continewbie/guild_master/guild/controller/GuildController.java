@@ -42,7 +42,12 @@ public class GuildController {
         this.memberGuildMapper = memberGuildMapper;
     }
 
+<<<<<<< HEAD
+
+    @PostMapping()
+=======
     @PostMapping
+>>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
     public ResponseEntity postMember(@Valid @RequestBody GuildDto.Post requestBody, Authentication authentication) {
         Guild guild = guildMapper.guildPostDtoToGuild(requestBody);
         Guild createdGuild = guildService.createGuild(guild, authentication);
