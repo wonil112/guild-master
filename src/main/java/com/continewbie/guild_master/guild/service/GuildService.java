@@ -5,11 +5,7 @@ import com.continewbie.guild_master.exception.ExceptionCode;
 import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.guild.repository.GuildRepository;
 import com.continewbie.guild_master.member.entity.Member;
-<<<<<<< HEAD
-import com.continewbie.guild_master.member.entity.MemberGuild;
-=======
 import com.continewbie.guild_master.memberguild.entity.MemberGuild;
->>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
 import com.continewbie.guild_master.member.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,16 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-=======
 import java.util.*;
 
 import static com.continewbie.guild_master.memberguild.entity.MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_ACTIVE;
-
->>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
 
 @Service
 public class GuildService {
@@ -41,10 +30,6 @@ public class GuildService {
         this.memberService = memberService;
     }
 
-<<<<<<< HEAD
-    //추가 시작
-=======
->>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
     public Guild createGuild(Guild guild, Authentication authentication) {
 
         // Member 의 role 이 ROLE_USER 가 없다면 회원이 아니므로 길드 생성 불가.
@@ -61,12 +46,9 @@ public class GuildService {
         for(MemberGuild memberGuild : member.getMemberGuildList()){
             if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()){
                 throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
-<<<<<<< HEAD
             }
             else if(email.equals(memberGuild.getMember().getEmail())){
-=======
             } else if(email.equals(memberGuild.getMember().getEmail())){
->>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
                 throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
             }
         }
@@ -89,18 +71,10 @@ public class GuildService {
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER);
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MANAGER);
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MASTER);
-<<<<<<< HEAD
-
-        memberGuild.setMemberGuildRoles(roles);
-
-=======
         memberGuild.setMemberGuildRoles(roles);
 
         List<MemberGuild.MemberGuildStatus> statuses = Collections.singletonList(MEMBER_GUILD_STATUS_ACTIVE);
         memberGuild.setMemberGuildStatuses(statuses);
-
-
->>>>>>> fba3364fc2a493f558f100abee0ecc52fa366b54
         guild.addMemberGuild(memberGuild);
 
         return guildRepository.save(guild);
