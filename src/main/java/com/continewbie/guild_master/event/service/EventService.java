@@ -7,9 +7,9 @@ import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.guild.repository.GuildRepository;
 import com.continewbie.guild_master.guild.service.GuildService;
 import com.continewbie.guild_master.member.entity.Member;
-import com.continewbie.guild_master.member.entity.MemberGuild;
 import com.continewbie.guild_master.member.service.MemberService;
 
+import com.continewbie.guild_master.memberguild.entity.MemberGuild;
 import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import com.continewbie.guild_master.event.repository.EventRepository;
 import com.continewbie.guild_master.exception.BusinessLogicException;
