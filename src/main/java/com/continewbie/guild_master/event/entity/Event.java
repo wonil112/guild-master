@@ -40,9 +40,21 @@ public class Event extends Auditable {
     @Column(nullable = false)
     private LocalDateTime dueDate;
 
-    @Setter
-    @Column(name = "GOT_AT")
-    private LocalDateTime gotAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EventStatus eventStatus = EventStatus.EVENT_STATUS_ACTIVE;
+
+    public enum EventStatus {
+        EVENT_STATUS_ACTIVE("활성"),
+        EVENT_STATUS_COMPLETE("종료");
+
+        @Getter
+        private String status;
+
+        EventStatus(String status){
+            this.status = status;
+        }
+    }
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberEvent> memberEvents = new ArrayList<>();

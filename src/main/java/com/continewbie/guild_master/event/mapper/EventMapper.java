@@ -37,14 +37,6 @@ public interface EventMapper {
     //patchDto
     default EventDto.Response eventToEventResponseDto(Event event){
 
-
-        System.out.println("@".repeat(30));
-        System.out.println(event.getEventName());
-        System.out.println(event.getEventContent());
-        System.out.println(event.getEventTotalPopulation());
-        System.out.println(event.getDueDate());
-        System.out.println(event.getStartDate());
-
         //원래 코드지만 빌더로 바꿈
         EventDto.Response eventResponseDto = new EventDto.Response();
         Guild guild = event.getGuild();
@@ -57,6 +49,7 @@ public interface EventMapper {
         eventResponseDto.setEventCurrentPopulation(event.getEventCurrentPopulation());
         eventResponseDto.setDueDate(event.getDueDate());
         eventResponseDto.setStartDate(event.getStartDate());
+        eventResponseDto.setEventStatus(event.getEventStatus());
         eventResponseDto.setCreatedAt(event.getCreatedAt());
         eventResponseDto.setModifiedAt(event.getModifiedAt());
 
