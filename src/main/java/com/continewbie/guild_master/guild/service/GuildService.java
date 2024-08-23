@@ -101,7 +101,7 @@ public class GuildService {
 
     public Page<Guild> findGuilds(int page, int size) {
 
-        return guildRepository.findAll(PageRequest.of(page, size, Sort.by("guildId")));
+        return guildRepository.findAll(PageRequest.of(page, size, Sort.by("guildCurrentPopulation")));
     }
 
     private Guild verifyFindIdGuild(long guildId) {

@@ -29,10 +29,10 @@ public class Event extends Auditable {
     private String eventContent;
 
     @Column(nullable = false)
-    private int eventTotalPopulation;
+    private Integer eventTotalPopulation;
 
     @Column(nullable = false)
-    private int eventCurrentPopulation = 1;
+    private int eventCurrentPopulation = 0;
 
     @Column(nullable = false)
     private LocalDateTime startDate;

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface EventMapper {
+    //origin
     default Event eventPostDtoToEvent(EventDto.Post eventPostDto){
         Event event = new Event();
         Guild guild = eventPostDto.getGuild();
@@ -27,8 +28,24 @@ public interface EventMapper {
         return event;
     }
 
+    Event eventPatchDtoToEvent(EventDto.Patch eventPatchDto);
 
+//    EventDto.Response eventToEventResponseDto(Event event);
+//
+//    List<EventDto.Response> eventsToEventResponses(List<Event> events);
+
+    //patchDto
     default EventDto.Response eventToEventResponseDto(Event event){
+
+
+        System.out.println("@".repeat(30));
+        System.out.println(event.getEventName());
+        System.out.println(event.getEventContent());
+        System.out.println(event.getEventTotalPopulation());
+        System.out.println(event.getDueDate());
+        System.out.println(event.getStartDate());
+
+        //원래 코드지만 빌더로 바꿈
         EventDto.Response eventResponseDto = new EventDto.Response();
         Guild guild = event.getGuild();
         eventResponseDto.setEventId(event.getEventId());
@@ -46,28 +63,8 @@ public interface EventMapper {
         return eventResponseDto;
     }
 
-//    private MemberEventResponseDto memberEventToMemberEventResponseDto(MemberEvent memberEvent) {
-//
-//        MemberEventResponseDto memberEventResponseDto = new MemberEventResponseDto(
-//                memberEvent.getMemberEventId(),
-//                memberEvent.getMember().getMemberId(),
-//                memberEvent.getEvent().getEventId(),
-//                memberEvent.getGameTier(),
-//                memberEvent.getSelectedPosition(),
-//                memberEvent.getCreatedAt()
-//
-//        );
-//        return memberEventResponseDto;
-//    }
-//
-//    default MemberEventResponseDto eventToMemberEventResponseDto(Event event){
-//        List<MemberEventResponseDto> memberEventDtos = event.getMemberEvents().stream()
-//                .map(this::memberEventToMemberEventResponseDto)
-//                .collect(Collectors.toList());
-//
-//        return new MemberEventR
-//    }
 
+//    origin
     default List<EventDto.Response> eventsToEventResponses(List<Event> events) {
 
         return events.stream()
@@ -75,6 +72,5 @@ public interface EventMapper {
                 .collect(Collectors.toList());
     }
 
-    Event eventPatchDtoToEvent(EventDto.Patch eventPatchDto);
 
 }

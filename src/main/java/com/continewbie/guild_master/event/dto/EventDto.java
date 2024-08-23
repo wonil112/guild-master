@@ -4,10 +4,7 @@ import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventDto;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventResponseDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
@@ -51,8 +48,8 @@ public class  EventDto {
 
     }
 
-    @Getter
     @AllArgsConstructor
+    @Getter
     public static class Patch {
         private long eventId;
 
@@ -69,10 +66,8 @@ public class  EventDto {
         public void setEventId(long eventId) {this.eventId = eventId;}
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
     @Setter
+    @Getter
     public static class Response {
         private long eventId;
         private long gameId;

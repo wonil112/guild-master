@@ -1,8 +1,11 @@
 package com.continewbie.guild_master.event.service;
 
 import com.continewbie.guild_master.event.entity.Event;
+import com.continewbie.guild_master.game.entity.Game;
+import com.continewbie.guild_master.game.service.GameService;
 import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.guild.repository.GuildRepository;
+import com.continewbie.guild_master.guild.service.GuildService;
 import com.continewbie.guild_master.member.entity.Member;
 import com.continewbie.guild_master.member.entity.MemberGuild;
 import com.continewbie.guild_master.member.service.MemberService;
@@ -13,6 +16,7 @@ import com.continewbie.guild_master.exception.BusinessLogicException;
 import com.continewbie.guild_master.exception.ExceptionCode;
 
 import com.continewbie.guild_master.memeberevent.repository.MemberEventRepository;
+import com.continewbie.guild_master.position.entity.Position;
 import com.continewbie.guild_master.utils.validator.InvalidEventDateException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +24,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,12 +36,16 @@ public class EventService {
     private final MemberService memberService;
     private final GuildRepository guildRepository;
     private final MemberEventRepository memberEventRepository;
+    private final GuildService guildService;
+    private final GameService gameService;
 
-    public EventService(EventRepository eventRepository, MemberService memberService, GuildRepository guildRepository, MemberEventRepository memberEventRepository) {
+    public EventService(EventRepository eventRepository, MemberService memberService, GuildRepository guildRepository, MemberEventRepository memberEventRepository, GuildService guildService, GameService gameService) {
         this.eventRepository = eventRepository;
         this.memberService = memberService;
         this.guildRepository = guildRepository;
         this.memberEventRepository = memberEventRepository;
+        this.guildService = guildService;
+        this.gameService = gameService;
     }
 
     // MemberGuild의 memberGuildRole이 MANAGER, MASTER이 아니라면 Event를 생성할 수 있음.
@@ -48,16 +59,25 @@ public class EventService {
 
     public Event updateEvent(Event event, Authentication authentication) {
 
-        authenticateManager(event, authentication);
 
         Event findEvent = findVerifiedEvent(event.getEventId());
+        Guild guild = guildService.findGuild(findEvent.getGuild().getGuildId());
+        Game game = gameService.findGame(guild.getGame().getGameId());
 
         Optional.ofNullable(event.getEventName())
-                .ifPresent(eventName -> findEvent.setEventName(eventName));
+                .ifPresent(eventName -> findEvent.setEventName(event.getEventName()));
         Optional.ofNullable(event.getEventContent())
-                .ifPresent(eventContent -> findEvent.setEventContent(eventContent));
+                .ifPresent(eventContent -> findEvent.setEventContent(event.getEventContent()));
         Optional.ofNullable(event.getEventTotalPopulation())
-                .ifPresent(eventTotalPopulation -> findEvent.setEventTotalPopulation(eventTotalPopulation));
+                .ifPresent(eventTotalPopulation -> findEvent.setEventTotalPopulation(event.getEventTotalPopulation()));
+
+        findEvent.setModifiedAt(LocalDateTime.now());
+        findEvent.setGuild(guild);
+        findEvent.getGuild().setGame(game);
+
+
+        //findEvent에 길드를 넣어줘서
+        authenticateManager(findEvent, authentication);
 
         return eventRepository.save(findEvent);
     }
@@ -82,7 +102,7 @@ public class EventService {
         authenticatePlayerByGuildId(guildId, authentication);
 
         return eventRepository.findByGuildId(guildId, PageRequest.of(page, size,
-                Sort.by("eventId").ascending()));
+                Sort.by("startDate").ascending()));
     }
 
     //3. 특정 이벤트를 참여하는 기능
@@ -90,10 +110,14 @@ public class EventService {
                                        Authentication authentication){
 
         Event findEvent = findVerifiedEvent(eventId);
+
         authenticatePlayer(findEvent, authentication);
 
+        //이벤트에 인원이 꽉 찼으면 참석이 안되는 검증
         verifiedPopulation(findEvent);
 
+        //동일한 이벤트에 두번 참석이 불가능.
+        verifiedAlreadyAttendee(findEvent, memberEvent);
 
         findEvent.setEventCurrentPopulation(findEvent.getEventCurrentPopulation() + 1);
 
@@ -102,6 +126,8 @@ public class EventService {
         findMemberEvents.add(memberEvent);
 
         eventRepository.save(findEvent);
+        //참여하는 사람이 길드원인지 확인하는 검증
+
         return memberEvent;
     }
 
@@ -114,7 +140,7 @@ public class EventService {
         // 권한 확인 안해도 모두가 할 수 있으니 검증 안해도 됨.
 
         return eventRepository.findByMemberId(findMember.getMemberId(), PageRequest.of(page, size,
-                Sort.by("eventId").ascending()));
+                Sort.by("startDate").ascending()));
     }
 
 
@@ -131,27 +157,31 @@ public class EventService {
         // 현재 요청한 유저가 해당 이벤트를 진행중인 길드의 길드원인지 확인
         authenticatePlayer(findEvent, authentication);
 
-//        return eventRepository.findByEventId(findEvent.getEventId(), PageRequest.of(page, size,
-//                Sort.by("memberId").ascending()));
-        return memberEventRepository.findByEvent(findEvent, PageRequest.of(page, size,
-                Sort.by("memberId").ascending()));
+
+        return memberEventRepository.findByEventId(eventId, PageRequest.of(page, size,
+                Sort.by("memberEventId").ascending()));
 
     }
 
 
     //6. 이벤트 참가 신청 삭제
-    public void deleteAttendee (long eventId, long memberEventId, Authentication authentication){
+    public void deleteAttendee (long eventId, long memberId, Authentication authentication){
         Event findEvent = findVerifiedEvent(eventId);
+
+        //삭제하려는 사람이 매니저인지 확인
         authenticateManager(findEvent, authentication);
 
+        //findMember의 MemberEvent를 삭제해야 함.
+        Member findMember = memberService.findMember(memberId);
+
         // MemberEvent를 찾기
-        Optional<MemberEvent> memberEventToDelete = findEvent.getMemberEvents().stream()
-                .filter(memberEvent -> memberEvent.getMemberEventId() == memberEventId)
+        Optional<MemberEvent> findMemberEvents = findEvent.getMemberEvents().stream()
+                .filter(memberEvent -> memberEvent.getMember().getMemberId() == memberId)
                 .findFirst();
 
-        if (memberEventToDelete.isPresent()) {
+        if (findMemberEvents.isPresent()) {
             // MemberEvent를 Event에서 삭제
-            findEvent.getMemberEvents().remove(memberEventToDelete.get());
+            findEvent.getMemberEvents().remove(findMemberEvents.get());
 
             // Event 저장
             eventRepository.save(findEvent);
@@ -159,6 +189,37 @@ public class EventService {
             throw new BusinessLogicException(ExceptionCode.EVENT_NOT_FOUND);
         }
 
+    }
+
+    // 7. 이벤트 참가 직업별 현황
+    public Map<String, Integer> findPositionCounts(long eventId){
+        Event event = findVerifiedEvent(eventId);
+        Optional<Guild> guild = guildRepository.findById((event.getGuild().getGuildId()));
+
+        Guild findGuild = guild.orElseThrow(() -> new BusinessLogicException(ExceptionCode.GUILD_NOT_FOUND));
+        Game game = findGuild.getGame();
+        List<MemberEvent> memberEvents = memberEventRepository.findByEventId(eventId);
+
+        Map<String, Integer> positionCounts = new HashMap<>();
+        //어떤 게임인지 가져오고 그 게임의 포지션을 저장한 리스트를 생성.
+        List<Position> positions = game.getPositionList();
+
+        // 포지션 카운트 리스트에 포지션들 저장.
+        for(Position position : positions) {
+            for(int i=0; i<positions.size(); i++){
+                positionCounts.put(position.getPositionName(), 0);
+            }
+        }
+
+        //MemberEvents를 돌면서 positionCountList의 key == selectedPosition 이면 value +1
+        for(MemberEvent memberEvent : memberEvents) {
+            String selectedPosition = memberEvent.getSelectedPosition();
+
+            if(positionCounts.containsKey(selectedPosition)) {
+                positionCounts.put(selectedPosition, positionCounts.get(selectedPosition) + 1);
+            }
+        }
+        return positionCounts;
     }
 
     // (유효성 검증) 현재 인원수 == 전체 인원수 인데 추가를 하려고 할 때 예외
@@ -184,17 +245,15 @@ public class EventService {
         Guild findGuild = event.getGuild();
 
         //멤버의 멤버길드의 길드ID가 이벤트의 길드Id가 같을 때, 거기서의 권한을 확인
-        authenticateRole(findMember, event, findMember.getMemberGuildList());
+        authenticateRole(findMember, event);
     }
     // (유효성 검증) MemberGuildRole이 길드원인지 확인
     public void authenticatePlayer(Event event, Authentication authentication){
         String email = (String) authentication.getPrincipal();
         Member findMember = memberService.findVerifiedEmail(email);
 
-        Guild findGuild = event.getGuild();
-
-        //멤버의 멤버길드의 길드ID가 이벤트의 길드Id가 같을 때, 거기서의 권한을 확인
-        authenticateRole(findMember, event, findMember.getMemberGuildList());
+        //멤버의 멤버길드의 길드ID가 이벤트의 길드Id가 포함되어있을 때, 거기서의 권한을 확인
+        authenticateRole(findMember, event);
     }
 
     public void authenticatePlayerByGuildId(long guildId, Authentication authentication){
@@ -219,17 +278,33 @@ public class EventService {
         }
     }
 
-    //파라미터로 event를 받을 때 검증 메서드에서 중복 코드를 또 줄이기 위해 생성
-    public void authenticateRole(Member findMember, Event event, List<MemberGuild> memberGuildList){
+
+    //멤버의 멤버길드의 길드ID가 이벤트의 길드Id가 포함되어있을 때, 거기서의 권한을 확인
+    public void authenticateRole(Member findMember, Event event){
+        boolean isTrue = false;
+
+        //member -> memberGuilds ->  -> guild-id == event -> guild -> guild-id
+
         for(MemberGuild memberGuild : findMember.getMemberGuildList()){
+            // member-id는 1인 memberGuild를 반환
+
             if(memberGuild.getGuild().getGuildId() == event.getGuild().getGuildId()){
                 //MemberGuildRole이 권한이 없으면 오류 발생
                 if(!memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER)){
                     throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
                 }
+                isTrue = true;
             }
-            else {
-                throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
+        }
+        if(isTrue == false){
+            throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
+        }
+    }
+
+    public void verifiedAlreadyAttendee(Event event, MemberEvent memberEvent){
+        for(MemberEvent me : event.getMemberEvents()){
+            if(memberEvent.getMember().getMemberId() == me.getMember().getMemberId()){
+                throw new BusinessLogicException(ExceptionCode.EVENT_ALREADY_ATTEND);
             }
         }
     }

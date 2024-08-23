@@ -12,7 +12,8 @@ import lombok.Getter;
         GUILD_ALREADY_EXISTS(404,"Guild already exists"),
         EVENT_NOT_FOUND(404, "Event not found"),
         EVENT_MAX_PARTICIPANTS(400, "CurrentPopulation Over TotalPopulation"),
-        EVENT_NOT_PERMISSION(404, "Cant Create Event");
+        EVENT_NOT_PERMISSION(404, "Event Not Permission"),
+        EVENT_ALREADY_ATTEND(400, "Event Already Attend");
         @Getter
         private int status;
 

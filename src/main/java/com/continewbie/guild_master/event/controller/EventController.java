@@ -1,7 +1,11 @@
 package com.continewbie.guild_master.event.controller;
 
 import com.continewbie.guild_master.dto.MultiResponseDto;
+import com.continewbie.guild_master.dto.SingleResponseDto;
 import com.continewbie.guild_master.event.dto.EventDto;
+import com.continewbie.guild_master.game.entity.Game;
+import com.continewbie.guild_master.guild.entity.Guild;
+import com.continewbie.guild_master.guild.service.GuildService;
 import com.continewbie.guild_master.member.entity.Member;
 import com.continewbie.guild_master.member.service.MemberService;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventDto;
@@ -11,6 +15,8 @@ import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
 import com.continewbie.guild_master.event.mapper.EventMapper;
 import com.continewbie.guild_master.memeberevent.mapper.MemberEventMapper;
 import com.continewbie.guild_master.event.service.EventService;
+import com.continewbie.guild_master.memeberevent.repository.MemberEventRepository;
+import com.continewbie.guild_master.position.entity.Position;
 import com.continewbie.guild_master.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/events")
@@ -36,13 +42,17 @@ public class EventController {
     private final EventMapper eventMapper;
     private final MemberEventMapper memberEventMapper;
     private final MemberService memberService;
+    private final GuildService guildService;
+    private final MemberEventRepository memberEventRepository;
 
 
-    public EventController(EventService eventService, EventMapper eventMapper, MemberEventMapper memberEventMapper, MemberService memberService) {
+    public EventController(EventService eventService, EventMapper eventMapper, MemberEventMapper memberEventMapper, MemberService memberService, GuildService guildService, MemberEventRepository memberEventRepository) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
         this.memberEventMapper = memberEventMapper;
         this.memberService = memberService;
+        this.guildService = guildService;
+        this.memberEventRepository = memberEventRepository;
     }
 
     @PostMapping
@@ -57,9 +67,16 @@ public class EventController {
     public ResponseEntity patchEvent(@PathVariable("event-id") @Positive long eventId, @Valid @RequestBody EventDto.Patch requestBody,
                                      Authentication authentication) {
         requestBody.setEventId(eventId);
-        Event event = eventMapper.eventPatchDtoToEvent(requestBody);
-        Event updatedEvent = eventService.updateEvent(event, authentication);
-        return new ResponseEntity<>(eventMapper.eventToEventResponseDto(updatedEvent), HttpStatus.OK);
+        //eventPatchDto(requestBody)
+        //
+
+
+
+        Event event = eventService.updateEvent(eventMapper.eventPatchDtoToEvent(requestBody), authentication);
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(eventMapper.eventToEventResponseDto(event)),
+                HttpStatus.OK);
     }
 
     //0. 특정 이벤트 삭제
@@ -95,18 +112,18 @@ public class EventController {
                         pageEvents), HttpStatus.OK);
     }
     //3. 특정 이벤트를 참여하는 기능
-    @PostMapping("/{event-id}/registration")
-    public ResponseEntity postAttendee(@PathVariable("event-id") @Positive long eventId,
-                                       @Valid @RequestBody MemberEventDto requestBody,
+    @PostMapping("/registration")
+    public ResponseEntity postAttendee(@Valid @RequestBody MemberEventDto requestBody,
                                        Authentication authentication) {
 
         String email = (String)authentication.getPrincipal();
         Member findMember = memberService.findVerifiedEmail(email);
         requestBody.setMemberId(findMember.getMemberId());
 
-
-        MemberEvent memberEvent = eventService.createAttendee(eventId,
+        MemberEvent memberEvent = eventService.createAttendee(requestBody.getEventId(),
                 memberEventMapper.memberEventDtoToMemberEvent(requestBody), authentication);
+        System.out.println("=".repeat(30));
+
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -126,7 +143,7 @@ public class EventController {
     }
 
     //5. 특정 이벤트의 전체 참가자 조회
-    @GetMapping("/{event-id}/registration")
+    @GetMapping("/{event-id}/members")
     public ResponseEntity getAttendees(@PathVariable("event-id") @Positive long eventId,
                                        @Positive @RequestParam int page,
                                        @Positive @RequestParam int size,
@@ -137,7 +154,6 @@ public class EventController {
         List<MemberEventResponseDto> ResponseDtos =
                 memberEventMapper.memberEventsToMemberEventResponseDtos(findMemberEvents);
 
-
         return new ResponseEntity<>(
                 new MultiResponseDto<>(memberEventMapper.memberEventsToMemberEventResponseDtos(findMemberEvents),
                         pageMemberEvents), HttpStatus.OK);
@@ -145,12 +161,19 @@ public class EventController {
 
 
     //6. 이벤트 참가 신청 삭제
-    @DeleteMapping("/{event-id}/{memberEvent-id}")
+    @DeleteMapping("/{event-id}/members/{member-id}")
     public ResponseEntity deleteAttendees(@PathVariable("event-id") @Positive long eventId,
-                                          @PathVariable("memberEvent-id") @Positive long memberEventId,
+                                          @PathVariable("member-id") @Positive long memberId,
                                           Authentication authentication) {
 
-        eventService.deleteAttendee(eventId, memberEventId, authentication);
+        eventService.deleteAttendee(eventId, memberId, authentication);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // 7. 특정 이벤트 참가자 직업별 현황
+    @GetMapping("/{event-id}/positions")
+    public ResponseEntity<Map<String, Integer>> getPositions(@PathVariable("event-id") @Positive long eventId){
+
+        return new ResponseEntity<>(eventService.findPositionCounts(eventId), HttpStatus.OK);
     }
 }
