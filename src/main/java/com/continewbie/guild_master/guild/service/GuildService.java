@@ -6,7 +6,10 @@ import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.guild.repository.GuildRepository;
 import com.continewbie.guild_master.member.entity.Member;
 import com.continewbie.guild_master.memberguild.entity.MemberGuild;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
 import com.continewbie.guild_master.member.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,16 +20,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+=======
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
 import java.util.*;
 
 import static com.continewbie.guild_master.memberguild.entity.MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_ACTIVE;
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
 @Service
 public class GuildService {
     private final GuildRepository guildRepository;
@@ -37,7 +46,10 @@ public class GuildService {
         this.memberService = memberService;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
     public Guild createGuild(Guild guild, Authentication authentication) {
 
         // Member 의 role 이 ROLE_USER 가 없다면 회원이 아니므로 길드 생성 불가.
@@ -54,10 +66,16 @@ public class GuildService {
         for(MemberGuild memberGuild : member.getMemberGuildList()){
             if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()){
                 throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
+<<<<<<< HEAD
 
             }
              else if(email.equals(memberGuild.getMember().getEmail())){
 
+=======
+            }
+            else if(email.equals(memberGuild.getMember().getEmail())){
+            } else if(email.equals(memberGuild.getMember().getEmail())){
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
                 throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
             }
         }
@@ -80,13 +98,19 @@ public class GuildService {
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER);
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MANAGER);
         roles.add(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MASTER);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
         memberGuild.setMemberGuildRoles(roles);
 
         List<MemberGuild.MemberGuildStatus> statuses = Collections.singletonList(MEMBER_GUILD_STATUS_ACTIVE);
         memberGuild.setMemberGuildStatuses(statuses);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 3b7decb0434037e2dad338b38f2f657e1779e198
         guild.addMemberGuild(memberGuild);
 
         return guildRepository.save(guild);
