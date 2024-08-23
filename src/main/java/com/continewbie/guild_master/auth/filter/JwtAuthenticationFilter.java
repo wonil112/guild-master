@@ -5,28 +5,39 @@ import com.continewbie.guild_master.auth.dto.LoginDto;
 import com.continewbie.guild_master.auth.jwt.JwtTokenizer;
 import com.continewbie.guild_master.member.entity.Member;
 import lombok.SneakyThrows;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
-
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer) {
+//    추가
+    private final RedisTemplate redisTemplate;
+//    의존성 주입
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer, RedisTemplate redisTemplate) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
+        this.redisTemplate = redisTemplate;
     }
+
 
     @Override
     @SneakyThrows
@@ -38,11 +49,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return authenticationManager.authenticate(authenticationToken);
     }
 
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         Member member = (Member) authResult.getPrincipal();
         String accessToken = delegateAccessToken(member);
-        String refreshToken = delegateRefreshToken(member);
+        String refreshToken = delegateRefreshToken(member,accessToken);
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
         response.setHeader("memberId", String.valueOf(member.getMemberId()));
@@ -59,15 +71,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
         String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+
         return accessToken;
     }
 
-    protected String delegateRefreshToken(Member member) {
+    protected String delegateRefreshToken(Member member, String accessToken) {
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey,accessToken);
         return refreshToken;
+    }
+    private URI createURI(String accessToken, String refreshToken) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("access_token", accessToken);
+        queryParams.add("refresh_token", refreshToken);
+
+        return UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host("localhost")
+//                .port(80)
+                .path("/receive-token.html")
+                .queryParams(queryParams)
+                .build()
+                .toUri();
     }
 }
