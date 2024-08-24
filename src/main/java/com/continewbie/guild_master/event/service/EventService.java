@@ -85,7 +85,13 @@ public class EventService {
     //1. 특정 이벤트 조회
     public Event findEvent(long eventId, Authentication authentication){
         Event event = findVerifiedEvent(eventId);
+
+        if(event.getDueDate().isBefore(LocalDateTime.now())){
+            event.setEventStatus(Event.EventStatus.EVENT_STATUS_COMPLETE);
+            eventRepository.save(event);
+        }
         authenticatePlayer(event, authentication);
+
 
         return event;
     }
@@ -301,6 +307,7 @@ public class EventService {
         }
     }
 
+    // 한 이벤트에 이미 참여한 지 확인하는 검증
     public void verifiedAlreadyAttendee(Event event, MemberEvent memberEvent){
         for(MemberEvent me : event.getMemberEvents()){
             if(memberEvent.getMember().getMemberId() == me.getMember().getMemberId()){
