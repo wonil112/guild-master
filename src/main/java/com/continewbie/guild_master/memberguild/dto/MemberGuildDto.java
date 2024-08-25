@@ -40,8 +40,12 @@ public class MemberGuildDto {
     public static class Response {
         private long memberGuildId;
         private long memberId;
-        private long guildId;
         private String nickName;
+        private long gameId;
+        private long guildId;
+        private String guildName;
+        private int guildTotalPopulation;
+        private int guildCurrentPopulation;
         private LocalDateTime createdAt;
         private LocalDateTime deletedAt;
         private List<MemberGuild.MemberGuildRole> memberGuildRoles;

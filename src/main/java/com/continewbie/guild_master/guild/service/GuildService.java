@@ -47,10 +47,10 @@ public class GuildService {
             if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()){
                 throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
             }
-            else if(email.equals(memberGuild.getMember().getEmail())){
-            } else if(email.equals(memberGuild.getMember().getEmail())){
-                throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
-            }
+//            else if(email.equals(memberGuild.getMember().getEmail())){
+//            } else if(email.equals(memberGuild.getMember().getEmail())){
+//                throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+//            }
         }
 
         // 생성하려는 길드의 이름이 동일한 게임 내에 존재하는지 확인하는 코드
