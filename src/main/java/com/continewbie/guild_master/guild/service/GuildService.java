@@ -10,6 +10,7 @@ import com.continewbie.guild_master.member.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -41,18 +42,6 @@ public class GuildService {
         String email = (String) authentication.getPrincipal();
         Member member = memberService.findVerifiedEmail(email);
 
-        // 해당 member 의 memberGuild 를 조회해서 동일한 gameId 가 있으면 exception 발생.
-        // 현재 email 이 memberGuild 안에 동일하게 있으면 exception 발생.
-        for(MemberGuild memberGuild : member.getMemberGuildList()){
-            if(guild.getGame().getGameId() == memberGuild.getGuild().getGame().getGameId()){
-                throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_EXISTS);
-            }
-//            else if(email.equals(memberGuild.getMember().getEmail())){
-//            } else if(email.equals(memberGuild.getMember().getEmail())){
-//                throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
-//            }
-        }
-
         // 생성하려는 길드의 이름이 동일한 게임 내에 존재하는지 확인하는 코드
         Optional<Guild> findGuild = guildRepository.findByGameIdAndGuildName(
                 guild.getGame().getGameId(),
@@ -78,16 +67,50 @@ public class GuildService {
         guild.addMemberGuild(memberGuild);
 
         return guildRepository.save(guild);
-    }//추가 끝
+    }
 
+//    @Transactional
+//    public MemberGuild registerGuild(long guildId, Authentication authentication, String nickName) {
+//        String email = (String) authentication.getPrincipal();
+//        Member findMember = memberService.findVerifiedEmail(email);
+//        Guild findGuild = verifyFindIdGuild(guildId);
+//
+//
+//        MemberGuild memberGuild = new MemberGuild();
+//        memberGuild.setNickName(nickName);
+//        memberGuild.setGuild(findGuild);
+//        memberGuild.setMember(findMember);
+//        List<MemberGuild.MemberGuildStatus> statuses = Collections.
+//                singletonList(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT);
+//        memberGuild.setMemberGuildStatuses(statuses);
+//        findGuild.addMemberGuild(memberGuild);
+//        findGuild.setGuildCurrentPopulation(findGuild.getGuildCurrentPopulation() + 1);
+//
+//        return memberGuild;
+//    }
+    
     @Transactional
     public MemberGuild registerGuild(long guildId, Authentication authentication, String nickName) {
         String email = (String) authentication.getPrincipal();
-//        검증 완료된 유저 찾아오기
         Member findMember = memberService.findVerifiedEmail(email);
-//        가입할 길드 여부 검증메서드
         Guild findGuild = verifyFindIdGuild(guildId);
-//        입력한 정보를 바탕으로 memberGuild 생성
+
+        boolean hasExistingApplication = findMember.getMemberGuildList().stream()
+                .anyMatch(mg -> mg.getGuild().getGuildId() == guildId &&
+                        mg.getMemberGuildStatuses().contains(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT));
+
+        if (hasExistingApplication) {
+            throw new BusinessLogicException(ExceptionCode.GUILD_ALREADY_ATTEND);
+        }
+
+        long pendingApplications = findMember.getMemberGuildList().stream()
+                .filter(mg -> mg.getMemberGuildStatuses().contains(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT))
+                .count();
+
+        if (pendingApplications >= 5) {
+            throw new BusinessLogicException(ExceptionCode.GUILD_REGISTRATION_COUNT_MAX);
+        }
+
         MemberGuild memberGuild = new MemberGuild();
         memberGuild.setNickName(nickName);
         memberGuild.setGuild(findGuild);
@@ -95,12 +118,16 @@ public class GuildService {
         List<MemberGuild.MemberGuildStatus> statuses = Collections.singletonList(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT);
         memberGuild.setMemberGuildStatuses(statuses);
         findGuild.addMemberGuild(memberGuild);
+        findGuild.setGuildCurrentPopulation(findGuild.getGuildCurrentPopulation() + 1);
 
         return memberGuild;
     }
 
+
+
+    @Transactional
     public MemberGuild acceptGuild(long guildId, long memberId, Authentication authentication) {
-        verifyUserRoles(authentication);
+        verifyUserRoles(guildId,authentication);
         Guild findGuild = verifyFindIdGuild(guildId);
 
         MemberGuild findMemberGuild = findGuild.getMemberGuildList().stream()
@@ -111,7 +138,7 @@ public class GuildService {
         findMemberGuild.setNickName(findMemberGuild.getNickName());
         findMemberGuild.setMemberGuildRoles(List.of(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER));  // 역할을 PLAYER로 설정
         findMemberGuild.setMemberGuildStatuses(List.of(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_ACTIVE));  // 상태를 ACTIVE로 설정
-        findMemberGuild.getGuild().setGuildCurrentPopulation(findGuild.getGuildCurrentPopulation() + 1 );
+        findMemberGuild.getGuild().setGuildCurrentPopulation(findGuild.getGuildCurrentPopulation());
         guildRepository.save(findGuild);
         return findMemberGuild;
     }
@@ -163,14 +190,17 @@ public class GuildService {
         }
     }
 
-    private void verifyUserRoles(Authentication authentication) {
+    private void verifyUserRoles(long guildId, Authentication authentication) {
         String email = (String) authentication.getPrincipal();
         Member member = memberService.findVerifiedEmail(email);
+
         boolean hasRole = member.getMemberGuildList().stream()
+                .filter(memberGuild -> memberGuild.getGuild().getGuildId() == guildId)
                 .anyMatch(memberGuild -> memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MASTER) ||
                         memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_MANAGER));
+
         if (!hasRole) {
-            throw new RuntimeException("User does not have permission to accept members");
+            throw new AccessDeniedException("User does not have permission to accept members for this guild");
         }
     }
 

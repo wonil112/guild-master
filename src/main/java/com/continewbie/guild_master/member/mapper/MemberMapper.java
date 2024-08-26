@@ -59,6 +59,7 @@ public interface MemberMapper {
                 memberGuild.getMemberGuildStatuses()
         );
         return memberGuildResponseDto;
+  
     }
 
 }

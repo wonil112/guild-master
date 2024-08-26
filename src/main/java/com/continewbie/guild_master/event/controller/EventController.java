@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,7 +77,6 @@ public class EventController {
         //
 
 
-
         Event event = eventService.updateEvent(eventMapper.eventPatchDtoToEvent(requestBody), authentication);
 
         return new ResponseEntity<>(
@@ -101,9 +101,9 @@ public class EventController {
     //2. 특정 길드 내의 전체 이벤트 조회
     @GetMapping("/guilds/{guild-id}")
     public ResponseEntity getEventsForGuild(@PathVariable("guild-id") @Positive long guildId,
-                                    @Positive @RequestParam int page,
-                                    @Positive @RequestParam int size,
-                                    Authentication authentication) {
+                                            @Positive @RequestParam int page,
+                                            @Positive @RequestParam int size,
+                                            Authentication authentication) {
 
 
         Page<Event> pageEvents = eventService.findGuildEvents(guildId, page - 1, size, authentication);
@@ -123,12 +123,13 @@ public class EventController {
                 new MultiResponseDto<>(eventMapper.eventsToEventResponses((findEvents)),
                         pageEvents), HttpStatus.OK);
     }
+
     //3. 특정 이벤트를 참여하는 기능
     @PostMapping("/registration")
     public ResponseEntity postAttendee(@Valid @RequestBody MemberEventDto requestBody,
                                        Authentication authentication) {
 
-        String email = (String)authentication.getPrincipal();
+        String email = (String) authentication.getPrincipal();
         Member findMember = memberService.findVerifiedEmail(email);
         requestBody.setMemberId(findMember.getMemberId());
 
@@ -143,10 +144,10 @@ public class EventController {
     //4. 특정 멤버가 참여한 전체 이벤트 조회
     @GetMapping("/members")
     public ResponseEntity getEventsForMember(@Positive @RequestParam int page,
-                                    @Positive @RequestParam int size,
-                                    Authentication authentication) {
+                                             @Positive @RequestParam int size,
+                                             Authentication authentication) {
 
-        Page<Event> pageEvents = eventService.findMemberEvents( page - 1, size, authentication);
+        Page<Event> pageEvents = eventService.findMemberEvents(page - 1, size, authentication);
         List<Event> findEvents = pageEvents.getContent();
 
         return new ResponseEntity<>(
@@ -184,8 +185,11 @@ public class EventController {
 
     // 7. 특정 이벤트 참가자 직업별 현황
     @GetMapping("/{event-id}/positions")
-    public ResponseEntity<Map<String, Integer>> getPositions(@PathVariable("event-id") @Positive long eventId){
+    public ResponseEntity<Map<String, Integer>> getPositions(@PathVariable("event-id") @Positive long eventId) {
 
         return new ResponseEntity<>(eventService.findPositionCounts(eventId), HttpStatus.OK);
     }
+
 }
+
+

@@ -70,5 +70,6 @@ public interface GuildMapper {
                 memberGuild.getMemberGuildStatuses()
         );
         return memberGuildResponseDto;
+
     }
 }

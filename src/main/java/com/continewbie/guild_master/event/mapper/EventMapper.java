@@ -5,10 +5,12 @@ import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventResponseDto;
 import com.continewbie.guild_master.memeberevent.entity.MemberEvent;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,6 +66,5 @@ public interface EventMapper {
                 .map(this::eventToEventResponseDto)
                 .collect(Collectors.toList());
     }
-
 
 }
