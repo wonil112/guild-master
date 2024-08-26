@@ -65,6 +65,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST,"/members").permitAll()
                         .antMatchers(HttpMethod.POST,"/members/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/guilds/*").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/guilds").hasRole("USER")
                         .antMatchers(HttpMethod.GET,"/guilds/*").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/guilds/*/registration").hasRole("USER")
                         .anyRequest().permitAll());
