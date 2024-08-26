@@ -3,6 +3,7 @@ package com.continewbie.guild_master.event.controller;
 import com.continewbie.guild_master.dto.MultiResponseDto;
 import com.continewbie.guild_master.dto.SingleResponseDto;
 import com.continewbie.guild_master.event.dto.EventDto;
+import com.continewbie.guild_master.event.repository.EventRepository;
 import com.continewbie.guild_master.game.entity.Game;
 import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.guild.service.GuildService;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -46,15 +48,17 @@ public class EventController {
     private final MemberService memberService;
     private final GuildService guildService;
     private final MemberEventRepository memberEventRepository;
+    private final EventRepository eventRepository;
 
 
-    public EventController(EventService eventService, EventMapper eventMapper, MemberEventMapper memberEventMapper, MemberService memberService, GuildService guildService, MemberEventRepository memberEventRepository) {
+    public EventController(EventService eventService, EventMapper eventMapper, MemberEventMapper memberEventMapper, MemberService memberService, GuildService guildService, MemberEventRepository memberEventRepository, EventRepository eventRepository) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
         this.memberEventMapper = memberEventMapper;
         this.memberService = memberService;
         this.guildService = guildService;
         this.memberEventRepository = memberEventRepository;
+        this.eventRepository = eventRepository;
     }
 
     @PostMapping
@@ -103,6 +107,13 @@ public class EventController {
 
 
         Page<Event> pageEvents = eventService.findGuildEvents(guildId, page - 1, size, authentication);
+
+        for(Event event : pageEvents){
+            if(event.getDueDate().isBefore(LocalDateTime.now())){
+                event.setEventStatus(Event.EventStatus.EVENT_STATUS_COMPLETE);
+                eventRepository.save(event);
+            }
+        }
 
         List<Event> findEvents = pageEvents.getContent();
         List<EventDto.Response> testResponseDtos = eventMapper.eventsToEventResponses(findEvents);

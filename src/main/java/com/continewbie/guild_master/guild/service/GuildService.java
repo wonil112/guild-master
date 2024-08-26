@@ -42,7 +42,6 @@ public class GuildService {
         String email = (String) authentication.getPrincipal();
         Member member = memberService.findVerifiedEmail(email);
 
-
         // 생성하려는 길드의 이름이 동일한 게임 내에 존재하는지 확인하는 코드
         Optional<Guild> findGuild = guildRepository.findByGameIdAndGuildName(
                 guild.getGame().getGameId(),
