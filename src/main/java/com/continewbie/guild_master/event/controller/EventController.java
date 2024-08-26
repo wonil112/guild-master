@@ -72,10 +72,6 @@ public class EventController {
     public ResponseEntity patchEvent(@PathVariable("event-id") @Positive long eventId, @Valid @RequestBody EventDto.Patch requestBody,
                                      Authentication authentication) {
         requestBody.setEventId(eventId);
-        //eventPatchDto(requestBody)
-        //
-
-
 
         Event event = eventService.updateEvent(eventMapper.eventPatchDtoToEvent(requestBody), authentication);
 
@@ -141,12 +137,13 @@ public class EventController {
     }
 
     //4. 특정 멤버가 참여한 전체 이벤트 조회
-    @GetMapping("/members")
-    public ResponseEntity getEventsForMember(@Positive @RequestParam int page,
-                                    @Positive @RequestParam int size,
-                                    Authentication authentication) {
+    @GetMapping("/members/{member-id}")
+    public ResponseEntity getEventsForMember(@PathVariable("member-id") @Positive long memberId,
+                                             @Positive @RequestParam int page,
+                                             @Positive @RequestParam int size,
+                                             Authentication authentication) {
 
-        Page<Event> pageEvents = eventService.findMemberEvents( page - 1, size, authentication);
+        Page<Event> pageEvents = eventService.findMemberEvents( page - 1, size, memberId, authentication);
         List<Event> findEvents = pageEvents.getContent();
 
         return new ResponseEntity<>(

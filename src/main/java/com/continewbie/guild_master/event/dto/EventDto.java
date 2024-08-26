@@ -26,6 +26,8 @@ public class  EventDto {
         @Positive
         private long guildId;
 
+
+
         @Pattern(regexp = "^[\\p{L}\\p{N}가-힣\\s]{1,20}$", message = "이벤트명은 특수문자를 제외하고, 공백을 포함한 1글자에서 20글자까지 가능합니다.")
         private String eventName;
         @Size(min = 1, max = 100, message = "이벤트 내용은 1~100글자이어야 합니다.")

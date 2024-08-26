@@ -138,14 +138,14 @@ public class EventService {
     }
 
     //4. 특정 멤버가 참여한 전체 이벤트 조회
-    public Page<Event> findMemberEvents(int page, int size, Authentication authentication){
+    public Page<Event> findMemberEvents(int page, int size, long memberId, Authentication authentication){
 
         String email = (String) authentication.getPrincipal();
         Member findMember = memberService.findVerifiedEmail(email);
 
         // 권한 확인 안해도 모두가 할 수 있으니 검증 안해도 됨.
 
-        return eventRepository.findByMemberId(findMember.getMemberId(), PageRequest.of(page, size,
+        return eventRepository.findByMemberId(memberId, PageRequest.of(page, size,
                 Sort.by("startDate").ascending()));
     }
 
