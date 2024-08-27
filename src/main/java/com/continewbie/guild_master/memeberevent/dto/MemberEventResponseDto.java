@@ -11,6 +11,7 @@ import lombok.Setter;
 public class MemberEventResponseDto {
 
     private long memberId;
+    private String nickname;
     private long eventId;
     private String gameCode;
     private String gameTier;
