@@ -267,24 +267,16 @@ public class EventService {
         Member findMember = memberService.findVerifiedEmail(email);
 
         Guild findGuild = guildRepository.findById(guildId).orElseThrow(()->
-                new BusinessLogicException(ExceptionCode.GUILD_NOT_FOUND)
-        );
+                new BusinessLogicException(ExceptionCode.GUILD_NOT_FOUND));
+
         boolean isTrue = false;
 
-        //멤버의 멤버길드의 길드ID가 이벤트의 길드Id가 같을 때, 거기서의 권한을 확인
-
-        //특정 멤버가 참여한 전체 이벤트 조회할 때 오류였음.
-        //findMember.memberGuildList(guildId: 1, 2, 3)
-        //guildId = 2
         for(MemberGuild memberGuild : findMember.getMemberGuildList()){
             if(memberGuild.getGuild().getGuildId() == findGuild.getGuildId()){
                 //MemberGuildRole이 권한이 없으면 오류 발생
-                if(!memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER)){
-                    throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
-                }
                 isTrue = true;
+                break;
             }
-
         }
         if(!isTrue){
             throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
