@@ -95,6 +95,20 @@ public class GuildService {
         Member findMember = memberService.findVerifiedEmail(email);
         Guild findGuild = verifyFindIdGuild(guildId);
 
+        // 기능 추가 시작
+        long gameId = findGuild.getGame().getGameId();
+
+        // 1. 한 게임에 두 길드를 가입할 수 없음.
+        List<MemberGuild> memberGuilds = findMember.getMemberGuildList();
+        for(MemberGuild memberGuild : memberGuilds) {
+            if(memberGuild.getGuild().getGame().getGameId() == gameId){
+                throw new BusinessLogicException(ExceptionCode.GUILD_LIMIT_ONE);
+            }
+        }
+
+        //2. 길드의 마스터가
+
+        //기능 추가 끝
         boolean hasExistingApplication = findMember.getMemberGuildList().stream()
                 .anyMatch(mg -> mg.getGuild().getGuildId() == guildId &&
                         mg.getMemberGuildStatuses().contains(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT));

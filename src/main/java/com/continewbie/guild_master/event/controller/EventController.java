@@ -162,12 +162,11 @@ public class EventController {
         Page<MemberEvent> pageMemberEvents = eventService.findAttendees(eventId, page - 1, size, authentication);
 
         List<MemberEvent> findMemberEvents = pageMemberEvents.getContent();
-        List<MemberEventResponseDto> ResponseDtos =
+        List<MemberEventResponseDto> responseDtos =
                 memberEventMapper.memberEventsToMemberEventResponseDtos(findMemberEvents);
 
         return new ResponseEntity<>(
-                new MultiResponseDto<>(memberEventMapper.memberEventsToMemberEventResponseDtos(findMemberEvents),
-                        pageMemberEvents), HttpStatus.OK);
+                new MultiResponseDto<>(responseDtos, pageMemberEvents), HttpStatus.OK);
     }
 
 
