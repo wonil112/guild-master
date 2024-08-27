@@ -43,7 +43,7 @@ public class  EventDto {
         @Valid
         private List<MemberEventDto> memberEvents;
 
-        public Guild getGuild(){
+        public Guild getGuild() {
             Guild guild = new Guild();
             guild.setGuildId(guildId);
             return guild;
@@ -66,7 +66,9 @@ public class  EventDto {
         private int eventTotalPopulation;
 
 
-        public void setEventId(long eventId) {this.eventId = eventId;}
+        public void setEventId(long eventId) {
+            this.eventId = eventId;
+        }
     }
 
     @Setter
@@ -79,7 +81,6 @@ public class  EventDto {
         private String eventContent;
         private int eventTotalPopulation;
         private int eventCurrentPopulation;
-
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime startDate;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
@@ -89,4 +90,5 @@ public class  EventDto {
         private LocalDateTime modifiedAt;
 
     }
+
 }
