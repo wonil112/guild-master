@@ -34,7 +34,6 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/events")
 @Validated

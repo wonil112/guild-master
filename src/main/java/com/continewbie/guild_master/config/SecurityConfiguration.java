@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -82,7 +83,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST,"/guilds/**").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/guilds").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/guilds/**").hasRole("USER")
-                        .antMatchers(HttpMethod.GET, "/guilds").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/guilds").permitAll()
                         .antMatchers(HttpMethod.GET, "/guilds/**").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/guilds").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/guilds/**").hasRole("USER")
@@ -97,12 +98,10 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://guild-master.s3-website.ap-northeast-2.amazonaws.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        configuration.setAllowCredentials(true);
-//        POST 요청일 때 헤더에 해당 키 사용 가능 리스폰스에 노출을 안시키는걸 임의로 노출 가능하게 설정
-        configuration.setExposedHeaders(Arrays.asList("Authorization","memberId"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization","memberId", "Location"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
