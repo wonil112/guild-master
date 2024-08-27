@@ -295,12 +295,8 @@ public class EventService {
         for(MemberGuild memberGuild : findMember.getMemberGuildList()){
             // member-id는 1인 memberGuild를 반환
             if(memberGuild.getGuild().getGuildId() == event.getGuild().getGuildId()){
-                //MemberGuildRole이 권한이 없으면 오류 발생
-                if(!memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER)){
-                    throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
-                } // 이 if문은 없어도 무방하긴 함.
-
                 isTrue = true;
+                break;
             }
         }
         if(!isTrue){

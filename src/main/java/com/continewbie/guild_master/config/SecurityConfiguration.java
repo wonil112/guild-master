@@ -83,7 +83,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST,"/guilds/**").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/guilds").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/guilds/**").hasRole("USER")
-                        .antMatchers(HttpMethod.GET, "/guilds").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/guilds").permitAll()
                         .antMatchers(HttpMethod.GET, "/guilds/**").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/guilds").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/guilds/**").hasRole("USER")
@@ -98,17 +98,9 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-<<<<<<< HEAD
-        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://guild-master.s3-website.ap-northeast-2.amazonaws.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
-=======
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        configuration.setAllowCredentials(true);
->>>>>>> 849037a1fdbe27e36568535fa4a32752e907db1d
-//        POST 요청일 때 헤더에 해당 키 사용 가능 리스폰스에 노출을 안시키는걸 임의로 노출 가능하게 설정
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
         configuration.setExposedHeaders(Arrays.asList("Authorization","memberId", "Location"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
