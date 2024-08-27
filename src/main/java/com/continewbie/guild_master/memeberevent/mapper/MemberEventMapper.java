@@ -32,6 +32,8 @@ public interface MemberEventMapper {
 
     default MemberEventResponseDto memberEventToMemberResponseDto(MemberEvent memberEvent) {
         MemberEventResponseDto memberEventResponseDto = new MemberEventResponseDto();
+
+
         memberEventResponseDto.setMemberId(memberEvent.getMember().getMemberId());
         memberEventResponseDto.setEventId(memberEvent.getEvent().getEventId());
         memberEventResponseDto.setGameCode(memberEvent.getEvent().getGuild().getGame().getGameCode());

@@ -138,14 +138,14 @@ public class EventService {
     }
 
     //4. 특정 멤버가 참여한 전체 이벤트 조회
-    public Page<Event> findMemberEvents(int page, int size, Authentication authentication){
+    public Page<Event> findMemberEvents(int page, int size, long memberId, Authentication authentication){
 
         String email = (String) authentication.getPrincipal();
         Member findMember = memberService.findVerifiedEmail(email);
 
         // 권한 확인 안해도 모두가 할 수 있으니 검증 안해도 됨.
 
-        return eventRepository.findByMemberId(findMember.getMemberId(), PageRequest.of(page, size,
+        return eventRepository.findByMemberId(memberId, PageRequest.of(page, size,
                 Sort.by("startDate").ascending()));
     }
 
@@ -271,18 +271,25 @@ public class EventService {
         Guild findGuild = guildRepository.findById(guildId).orElseThrow(()->
                 new BusinessLogicException(ExceptionCode.GUILD_NOT_FOUND)
         );
+        boolean isTrue = false;
 
         //멤버의 멤버길드의 길드ID가 이벤트의 길드Id가 같을 때, 거기서의 권한을 확인
+
+        //특정 멤버가 참여한 전체 이벤트 조회할 때 오류였음.
+        //findMember.memberGuildList(guildId: 1, 2, 3)
+        //guildId = 2
         for(MemberGuild memberGuild : findMember.getMemberGuildList()){
             if(memberGuild.getGuild().getGuildId() == findGuild.getGuildId()){
                 //MemberGuildRole이 권한이 없으면 오류 발생
                 if(!memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER)){
                     throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
                 }
+                isTrue = true;
             }
-            else {
-                throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
-            }
+
+        }
+        if(!isTrue){
+            throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
         }
     }
 
@@ -295,16 +302,16 @@ public class EventService {
 
         for(MemberGuild memberGuild : findMember.getMemberGuildList()){
             // member-id는 1인 memberGuild를 반환
-
             if(memberGuild.getGuild().getGuildId() == event.getGuild().getGuildId()){
                 //MemberGuildRole이 권한이 없으면 오류 발생
                 if(!memberGuild.getMemberGuildRoles().contains(MemberGuild.MemberGuildRole.MEMBER_GUILD_ROLE_PLAYER)){
                     throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
-                }
+                } // 이 if문은 없어도 무방하긴 함.
+
                 isTrue = true;
             }
         }
-        if(isTrue == false){
+        if(!isTrue){
             throw new BusinessLogicException(ExceptionCode.EVENT_NOT_PERMISSION);
         }
     }
