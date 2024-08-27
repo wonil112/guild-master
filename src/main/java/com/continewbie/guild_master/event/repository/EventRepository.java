@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
+
 public interface EventRepository extends JpaRepository<Event, Long> {
     //쿼리 문제,, 점심
 

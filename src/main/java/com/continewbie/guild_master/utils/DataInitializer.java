@@ -24,19 +24,15 @@ public class DataInitializer implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-        // 현재 시간을 가져옵니다
         LocalDateTime now = LocalDateTime.now();
 
-        // 게임 데이터 생성
         Game overwatch = new Game(1L, "Overwatch", "OVW");
         Game valorant = new Game(2L, "Valorant", "VAL");
         Game leagueOfLegends = new Game(3L, "LeagueOfLegends", "LOL");
         Game lostArk = new Game(4L, "LostArk", "LOA");
 
-        // 게임 데이터 저장
         gameRepository.saveAll(List.of(overwatch, valorant, leagueOfLegends, lostArk));
 
-        // 포지션 데이터 생성
         List<Position> overwatchPositions = List.of(
                 new Position("Tanker", "OVW", overwatch),
                 new Position("Dealer", "OVW", overwatch),
