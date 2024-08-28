@@ -19,7 +19,8 @@ import lombok.Getter;
         ALREADY_PHONE_EXISTS(404,"Already Phone Exists"),
         GUILD_REGISTRATION_MAX(404, "Registration is full"),
         GUILD_ALREADY_ATTEND(404,"Registration already"),
-        ALREADY_EMAIL_EXISTS(404,"Already Email Exists");
+        ALREADY_EMAIL_EXISTS(404,"Already Email Exists"),
+        GUILD_LIMIT_ONE(400, "Guild Limit One");
 
         @Getter
         private int status;
