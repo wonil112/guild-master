@@ -87,21 +87,19 @@ $ npm start
 ```plaintext
 project/
 ├── public/
-│   ├── index.html           # HTML 템플릿 파일
-│   └── favicon.ico          # 아이콘 파일
 ├── src/
-│   ├── assets/              # 이미지, 폰트 등 정적 파일
-│   ├── components/          # 재사용 가능한 UI 컴포넌트
+│   ├── auth/                # 전역 로그인 상태관리 
+│   ├── component/           # 재사용 가능한 UI 컴포넌트
 │   ├── hooks/               # 커스텀 훅 모음
 │   ├── pages/               # 각 페이지별 컴포넌트
-│   ├── App.js               # 메인 애플리케이션 컴포넌트
+│   ├── App.js               # 라우터 관리
 │   ├── index.js             # 엔트리 포인트 파일
-│   ├── index.css            # 전역 css 파일
-│   ├── firebaseConfig.js    # firebase 인스턴스 초기화 파일
+│   └── index.css            # 전역 css 파일
 │   package-lock.json    # 정확한 종속성 버전이 기록된 파일로, 일관된 빌드를 보장
 │   package.json         # 프로젝트 종속성 및 스크립트 정의
-├── .gitignore               # Git 무시 파일 목록
-└── README.md                # 프로젝트 개요 및 사용법
+└── .gitignore               # Git 무시 파일 목록
+
+
 ```
 
 <br/>
