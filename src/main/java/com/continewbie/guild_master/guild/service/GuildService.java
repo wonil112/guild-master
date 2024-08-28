@@ -33,6 +33,7 @@ public class GuildService {
 
     public Guild createGuild(Guild guild, Authentication authentication) {
 
+
         // Member 의 role 이 ROLE_USER 가 없다면 회원이 아니므로 길드 생성 불가.
         if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
@@ -68,26 +69,6 @@ public class GuildService {
 
         return guildRepository.save(guild);
     }
-
-//    @Transactional
-//    public MemberGuild registerGuild(long guildId, Authentication authentication, String nickName) {
-//        String email = (String) authentication.getPrincipal();
-//        Member findMember = memberService.findVerifiedEmail(email);
-//        Guild findGuild = verifyFindIdGuild(guildId);
-//
-//
-//        MemberGuild memberGuild = new MemberGuild();
-//        memberGuild.setNickName(nickName);
-//        memberGuild.setGuild(findGuild);
-//        memberGuild.setMember(findMember);
-//        List<MemberGuild.MemberGuildStatus> statuses = Collections.
-//                singletonList(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT);
-//        memberGuild.setMemberGuildStatuses(statuses);
-//        findGuild.addMemberGuild(memberGuild);
-//        findGuild.setGuildCurrentPopulation(findGuild.getGuildCurrentPopulation() + 1);
-//
-//        return memberGuild;
-//    }
     
     @Transactional
     public MemberGuild registerGuild(long guildId, Authentication authentication, String nickName) {
@@ -95,6 +76,22 @@ public class GuildService {
         Member findMember = memberService.findVerifiedEmail(email);
         Guild findGuild = verifyFindIdGuild(guildId);
 
+        // 기능 추가 시작
+        long gameId = findGuild.getGame().getGameId();
+
+        // 1. 한 게임에 두 길드를 가입할 수 없음.
+        List<MemberGuild> memberGuilds = findMember.getMemberGuildList();
+        for(MemberGuild memberGuild : memberGuilds) {
+            if(memberGuild.getGuild().getGame().getGameId() == gameId
+            && memberGuild.getMemberGuildStatuses()
+                    .contains(MEMBER_GUILD_STATUS_ACTIVE)){
+                throw new BusinessLogicException(ExceptionCode.GUILD_LIMIT_ONE);
+            }
+        }
+
+        //2. 길드의 마스터가
+
+        //기능 추가 끝
         boolean hasExistingApplication = findMember.getMemberGuildList().stream()
                 .anyMatch(mg -> mg.getGuild().getGuildId() == guildId &&
                         mg.getMemberGuildStatuses().contains(MemberGuild.MemberGuildStatus.MEMBER_GUILD_STATUS_WAIT));
@@ -120,6 +117,7 @@ public class GuildService {
         findGuild.addMemberGuild(memberGuild);
         findGuild.setGuildCurrentPopulation(findGuild.getGuildCurrentPopulation() + 1);
 
+        verifyGuildRegistration(memberGuild);
         return memberGuild;
     }
 

@@ -93,7 +93,8 @@ public class GuildController {
 
 
     @PostMapping("/{guild-id}/registration")
-    public ResponseEntity<String> registerMember(@PathVariable("guild-id") long guildId, @RequestBody MemberGuildDto.Post requestBody, Authentication authentication) {
+    public ResponseEntity<String> registerMember(@PathVariable("guild-id") long guildId,
+                                                 @RequestBody MemberGuildDto.Post requestBody, Authentication authentication) {
         guildService.registerGuild(guildId,authentication,requestBody.getNickName());
         MemberGuild memberGuild = memberGuildMapper.memberGuildPostDtoToMemberGuild(requestBody);
         URI location = UriCreator.createUri(DEFAULT_GUILD_URL+"/registration", memberGuild.getMemberGuildId());
