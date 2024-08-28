@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class MemberGuildDto {
     public static class Post {
         private long memberId;
         private long guildId;
+
+        @NotNull(message = "닉네임 입력은 필수입니다.")
         private String nickName;
 
         public Member getMember(){
@@ -43,6 +46,11 @@ public class MemberGuildDto {
         private long memberId;
         private long guildId;
         private String nickName;
+        private long gameId;
+        private long guildId;
+        private String guildName;
+        private int guildTotalPopulation;
+        private int guildCurrentPopulation;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime createdAt;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")

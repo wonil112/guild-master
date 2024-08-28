@@ -33,6 +33,7 @@ public class GuildService {
 
     public Guild createGuild(Guild guild, Authentication authentication) {
 
+
         // Member 의 role 이 ROLE_USER 가 없다면 회원이 아니므로 길드 생성 불가.
         if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
@@ -89,7 +90,7 @@ public class GuildService {
 //
 //        return memberGuild;
 //    }
-
+    
     @Transactional
     public MemberGuild registerGuild(long guildId, Authentication authentication, String nickName) {
         String email = (String) authentication.getPrincipal();

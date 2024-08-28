@@ -101,7 +101,6 @@ public class JwtTokenizer {
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jws);
-
         return claims;
     }
 
