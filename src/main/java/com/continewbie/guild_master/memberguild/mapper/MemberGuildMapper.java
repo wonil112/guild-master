@@ -33,8 +33,12 @@ public interface MemberGuildMapper {
         MemberGuildDto.Response memberGuildResponseDto = new MemberGuildDto.Response(
                 memberGuild.getMemberGuildId(),
                 memberGuild.getMember().getMemberId(),
-                memberGuild.getGuild().getGuildId(),
                 memberGuild.getNickName(),
+                memberGuild.getGuild().getGame().getGameId(),
+                memberGuild.getGuild().getGuildId(),
+                memberGuild.getGuild().getGuildName(),
+                memberGuild.getGuild().getGuildTotalPopulation(),
+                memberGuild.getGuild().getGuildCurrentPopulation(),
                 memberGuild.getCreatedAt(),
                 memberGuild.getDeletedAt(),
                 memberGuild.getMemberGuildRoles(),
@@ -44,4 +48,5 @@ public interface MemberGuildMapper {
     }
 
     List<MemberGuildDto.Response> memberGuildToMemberGuildResponseDtos(List<MemberGuild> memberGuilds);
+
 }

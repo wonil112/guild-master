@@ -44,7 +44,6 @@ public class MemberGuildDto {
     public static class Response {
         private long memberGuildId;
         private long memberId;
-        private long guildId;
         private String nickName;
         private long gameId;
         private long guildId;
