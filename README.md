@@ -22,17 +22,7 @@ $ npm start
 <br/>
 <br/>
 
-# 2. Team Members (팀원 및 팀 소개)
-| 박원일 | 은하늘 | 김영진 | 김준하 |
-|:------:|:------:|:------:|:------:|
-| <img src="https://github.com/user-attachments/assets/fa2563b2-d0ef-4869-8c99-edfdc3711cd6" alt="박원일" width="150" height="160"> | <img src="https://github.com/user-attachments/assets/7311b866-a90a-4228-a554-da1a6eca2862" alt="은하늘" width="150" height="160"> | <img src="https://github.com/user-attachments/assets/d270d709-8afa-46c9-b94a-97ef98cd71ec" alt="김영진" width="150" height="160"> | <img src="https://github.com/user-attachments/assets/a0153d6c-1b8f-44be-aadd-9bcf7ae1f2ff" alt="김준하" width="150"> |
-| FE | FE | BE | BE |
-| [GitHub](https://github.com/wonil112) | [GitHub](https://github.com/skyla00) | [GitHub](https://github.com/Gizmoring) | [GitHub](https://github.com/HJk29) |
-
-<br/>
-<br/>
-
-# 3. Key Features (주요 기능)
+# 2. Key Features (주요 기능)
 - **회원가입**:
   - 회원가입 시 DB에 유저정보가 등록됩니다.
 
@@ -60,7 +50,7 @@ $ npm start
 <br/>
 <br/>
 
-# 4. Tasks & Responsibilities (작업 및 역할 분담)
+# 3. Tasks & Responsibilities (작업 및 역할 분담)
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | 박원일    |  <img src="https://github.com/user-attachments/assets/fa2563b2-d0ef-4869-8c99-edfdc3711cd6" alt="이동규" width="100"> | <ul><li>프로젝트 계획 및 관리</li><li>팀 리딩 및 커뮤니케이션</li><li>커스텀훅 개발</li></ul>     |
@@ -71,7 +61,7 @@ $ npm start
 <br/>
 <br/>
 
-# 5. Technology Stack (기술 스택)
+# 4. Technology Stack (기술 스택)
 ### 🔨 Front-end
 | Html | JavaScript | React | CSS |
 | :---: | :---: | :---: | :---: |
@@ -84,7 +74,7 @@ $ npm start
 | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/java-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://github.com/user-attachments/assets/ee9ac300-f713-4b48-9bc2-9f5ec1774ae9" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="icon" width="65" height="65" /></div> | <img alt="spring logo" src="https://www.vectorlogo.zone/logos/springio/springio-icon.svg" height="50" width="50" > | <img alt="spring-boot logo" src="https://t1.daumcdn.net/cfile/tistory/27034D4F58E660F616" width="65" height="65" > |
 <br/>
 
-## 5.4 Cooperation
+## 4.5 Cooperation
 |  |  |
 |-----------------|-----------------|
 | Git    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
@@ -93,7 +83,7 @@ $ npm start
 
 <br/>
 
-# 6. Project Structure (프로젝트 구조)
+# 5. Project Structure (프로젝트 구조)
 ```plaintext
 project/
 ├── public/
@@ -117,7 +107,7 @@ project/
 <br/>
 <br/>
 
-# 7. Development Workflow (개발 워크플로우)
+# 6. Development Workflow (개발 워크플로우)
 ## 브랜치 전략 (Branch Strategy)
 우리의 브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
 
@@ -132,7 +122,7 @@ project/
 <br/>
 <br/>
 
-# 8. Coding Convention
+# 7. Coding Convention
 
 ## 🤙 컨벤션
 
@@ -239,7 +229,7 @@ project/
 <br/>
 <br/>
 
-# 9. 커밋 컨벤션
+# 8. 커밋 컨벤션
 ## 기본 구조
 ```
 type : subject
@@ -304,7 +294,7 @@ UI개발을 위한 라이브러리 styled-components 설치
 <br/>
 <br/>
 
-## 🖥 구현 이미지
+## 9. 🖥 구현 이미지
 
 | 페이지 (기능)         | 이미지                                                                                                                          |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
