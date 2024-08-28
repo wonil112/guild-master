@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -47,7 +48,7 @@ public class SecurityConfiguration {
         // h2 웹 콘솔 화면 자체가 내부적으로 <frame> 을 사용하고 있음. 이를 정상적으로 수행하도록 함.
         // 동일 출처로부터 들어오는 요청만 페이지 렌더링을 허용.
         http
-                .headers().frameOptions().sameOrigin()
+                .headers().frameOptions().disable()
                 .and()
                 .csrf().disable()
                 .cors(withDefaults())
@@ -64,9 +65,28 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(HttpMethod.POST,"/members").permitAll()
                         .antMatchers(HttpMethod.POST,"/members/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/guilds/*").hasRole("USER")
-                        .antMatchers(HttpMethod.GET,"/guilds/*").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/guilds/*/registration").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH,"/members").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH,"/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET,"/members").hasRole("USER")
+                        .antMatchers(HttpMethod.GET,"/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE,"/members").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE,"/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.POST,"/events").hasRole("USER")
+                        .antMatchers(HttpMethod.POST,"/events/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH,"/events").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH,"/events/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET,"/events").hasRole("USER")
+                        .antMatchers(HttpMethod.GET,"/events/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE,"/events").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE,"/events/**").hasRole("USER")
+                        .antMatchers(HttpMethod.POST,"/guilds").hasRole("USER")
+                        .antMatchers(HttpMethod.POST,"/guilds/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/guilds").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/guilds/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/guilds").permitAll()
+                        .antMatchers(HttpMethod.GET, "/guilds/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/guilds").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/guilds/**").hasRole("USER")
                         .anyRequest().permitAll());
         return http.build();
     }
@@ -78,13 +98,11 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
-
-//        POST 요청일 때 헤더에 해당 키 사용 가능 리스폰스에 노출을 안시키는걸 임의로 노출 가능하게 설정
-        configuration.setExposedHeaders(Arrays.asList("Authorization","memberId"));
-
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://guild-master.s3-website.ap-northeast-2.amazonaws.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization","memberId", "Location"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
