@@ -89,7 +89,7 @@ public class GuildService {
 //
 //        return memberGuild;
 //    }
-    
+
     @Transactional
     public MemberGuild registerGuild(long guildId, Authentication authentication, String nickName) {
         String email = (String) authentication.getPrincipal();
