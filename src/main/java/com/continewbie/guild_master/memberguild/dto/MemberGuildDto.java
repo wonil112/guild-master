@@ -41,6 +41,7 @@ public class MemberGuildDto {
     public static class Response {
         private long memberGuildId;
         private long memberId;
+        private long guildId;
         private String nickName;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime createdAt;

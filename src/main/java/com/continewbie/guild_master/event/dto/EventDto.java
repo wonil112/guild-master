@@ -1,6 +1,5 @@
 package com.continewbie.guild_master.event.dto;
 
-import com.continewbie.guild_master.event.entity.Event;
 import com.continewbie.guild_master.guild.entity.Guild;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventDto;
 import com.continewbie.guild_master.memeberevent.dto.MemberEventResponseDto;
@@ -83,7 +82,6 @@ public class  EventDto {
         private LocalDateTime startDate;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
         private LocalDateTime dueDate;
-        private Event.EventStatus eventStatus;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
 

@@ -58,12 +58,8 @@ public interface GuildMapper {
         MemberGuildDto.Response memberGuildResponseDto = new MemberGuildDto.Response(
                 memberGuild.getMemberGuildId(),
                 memberGuild.getMember().getMemberId(),
-                memberGuild.getNickName(),
-                memberGuild.getGuild().getGame().getGameId(),
                 memberGuild.getGuild().getGuildId(),
-                memberGuild.getGuild().getGuildName(),
-                memberGuild.getGuild().getGuildTotalPopulation(),
-                memberGuild.getGuild().getGuildCurrentPopulation(),
+                memberGuild.getNickName(),
                 memberGuild.getCreatedAt(),
                 memberGuild.getDeletedAt(),
                 memberGuild.getMemberGuildRoles(),
