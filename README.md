@@ -1,6 +1,6 @@
 
 <a href="https://club-project-one.vercel.app/" target="_blank">
-<img src="https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be" alt="배너" width="100%"/>
+<img src="https://github.com/user-attachments/assets/6cc8dc09-b574-4d68-8185-e409722090a7" alt="배너" width="100%"/>
 </a>
 
 <br/>
@@ -55,15 +55,17 @@ $ npm start
 
 # 3.📝 관련 문서
 
-#### [📌 요구사항 정의서](https://docs.google.com/spreadsheets/d/1DfUeCgU0jrdEpSmEmLVWainZ1wjpvFihpR83t6NWGdw/edit#gid=160309127)
+#### [📌 요구사항 정의서](https://docs.google.com/spreadsheets/d/1gfuB42EHzzEN3mD6FSUGyY0NquEv6dH_eMiSqoHsKfw/edit?gid=626989714#gid=626989714)
 
-#### [📌 화면 정의서](https://www.figma.com/file/yL1b8KClwZHoBXDcCp4wei/GrowStroy?type=design&node-id=1-8&mode=design)
+#### [📌 화면 정의서](https://docs.google.com/spreadsheets/d/1gfuB42EHzzEN3mD6FSUGyY0NquEv6dH_eMiSqoHsKfw/edit?gid=626989714#gid=626989714)
 
-#### [📌 API 명세서](https://documenter.getpostman.com/view/27565928/2s9Y5YS34h)
+#### [📌 API 명세서](https://docs.google.com/spreadsheets/d/1gfuB42EHzzEN3mD6FSUGyY0NquEv6dH_eMiSqoHsKfw/edit?gid=626989714#gid=626989714)
 
-#### [📌 ERD](https://www.figma.com/file/yL1b8KClwZHoBXDcCp4wei/GrowStroy?type=design&node-id=1-8&mode=design)
+#### [📌 목업](https://www.figma.com/design/FkIf92PUj6Xm0VBKQf7PiN/guild_master?node-id=0-1&node-type=CANVAS&t=Cbia6DL9dtJyyfi5-0)
 
-![ERD  GrowStory_final](https://github.com/nalsae/seb45_main_011/assets/101828759/35b133c5-790e-48cf-be56-8eb2f4c54522)
+#### [📌 ERD](https://www.erdcloud.com/d/obCDwgdFdnJP5F8js)
+
+![ERD  GrowStory_final](https://github.com/user-attachments/assets/5ec4f06e-3f57-4629-aa63-05d9647d7d01)
 
 <br>
 
