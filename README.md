@@ -113,8 +113,9 @@ $ npm start
 
 # 6. Project Structure (프로젝트 구조)
 <br>
+<details>
 
-## 📂 프로젝트 폴더 구조
+<summary> 📂 프로젝트 폴더 구조</summary>
 
 ```
 🏠 최애의 i
@@ -332,6 +333,9 @@ $ npm start
                   └─ GuildMasterApplicationTests.java
 ```
 
+<br>
+<br/>
+</details>
 <br>
 <br/>
 
