@@ -8,7 +8,7 @@
 
 # 0. Getting Started (시작하기)
 ```bash
-[서비스 링크]([http://guild-master.s3-website.ap-northeast-2.amazonaws.com])
+[서비스 링크(http://guild-master.s3-website.ap-northeast-2.amazonaws.com)]
 ```
 
 <br/>
