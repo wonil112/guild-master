@@ -340,7 +340,7 @@
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | 메인                  | ![메인 페이지](https://github.com/nalsae/seb45_main_011/assets/101828759/7e293d8a-9934-4aa8-b3af-e6ccd7aa112b)                  |
 | 로그인                | ![로그인 페이지](https://github.com/nalsae/seb45_main_011/assets/101828759/7b393893-9c3b-45a3-aa21-748f46b8b522)                |
-| 회원 가입             | ![회원 가입 페이지](https://github.com/nalsae/seb45_main_011/assets/101828759/9b6db6ec-0e98-4267-a172-c2adf29a9fb9)             |
+| 회원 가입             | ![회원 가입 페이지](https://github.com/user-attachments/assets/bb76dd95-8810-4797-8d5a-d96b4ffaf265)             |
 | 정원 (꾸미기)         | ![정원 페이지 - 꾸미기](https://github.com/nalsae/seb45_main_011/assets/101828759/de3caba6-42f5-4708-ad9c-8bd2e50a4231)         |
 | 정원 (장식품 구매)    | ![정원 페이지 - 구매](https://github.com/nalsae/seb45_main_011/assets/101828759/49c9acf3-b06d-44e9-9a16-208f8a022b63)           |
 | 정원 (식물 카드 연동) | ![정원 페이지 - 식물 카드 연동](https://github.com/nalsae/seb45_main_011/assets/101828759/ef6da970-f632-45b8-b0f9-eb737d5b9903) |
