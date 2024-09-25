@@ -340,12 +340,11 @@
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | 메인페이지 및 회원 가입   | ![회원 가입 페이지](https://github.com/user-attachments/assets/bb76dd95-8810-4797-8d5a-d96b4ffaf265)             |
 | 로그인                | ![로그인 페이지](https://github.com/user-attachments/assets/5c80df38-5641-46f0-a818-842c20ebf2ff)                |
-
-| 정원 (꾸미기)         | ![정원 페이지 - 꾸미기](https://github.com/nalsae/seb45_main_011/assets/101828759/de3caba6-42f5-4708-ad9c-8bd2e50a4231)         |
-| 정원 (장식품 구매)    | ![정원 페이지 - 구매](https://github.com/nalsae/seb45_main_011/assets/101828759/49c9acf3-b06d-44e9-9a16-208f8a022b63)           |
-| 정원 (식물 카드 연동) | ![정원 페이지 - 식물 카드 연동](https://github.com/nalsae/seb45_main_011/assets/101828759/ef6da970-f632-45b8-b0f9-eb737d5b9903) |
-| 식물 카드 목록, 등록  | ![식물카드 목록](https://github.com/nalsae/seb45_main_011/assets/101828759/a7f05c66-9a9b-4ff0-a32d-08599fb4dd9a)                |
-| 식물 카드 상세        | ![식물 카드 상세](https://github.com/nalsae/seb45_main_011/assets/101828759/38ab89f9-ec9c-4410-aeb9-83e9cd09ca7e)               |
+| 길드 검색하기         | ![길드 검색 페이지](https://github.com/user-attachments/assets/765f13b6-87b9-4494-9a8e-6c35443be3ed)         |
+| 길드 가입신청하기    | ![길드 검색 페이지](https://github.com/user-attachments/assets/d430e15d-d88e-495d-b87e-e31b2f3da18f)           |
+| 길드 가입승낙하기 | ![길드 페이지](https://github.com/user-attachments/assets/fb10edfe-dbf5-442e-83a0-0901657ba4bb) |
+| 이벤트 생성하기  | ![길드 페이지](https://github.com/user-attachments/assets/7d4bef47-0318-4f36-b6fe-e319ec60ac12)                |
+| 이벤트 참여하기        | ![길드 페이지](https://github.com/user-attachments/assets/c07aa239-55a1-45b6-a5a9-c64f29f4169c)               |
 | 식물 카드 수정, 삭제  | ![식물 카드 수정, 삭제](https://github.com/nalsae/seb45_main_011/assets/101828759/6fe42722-8676-4eee-bd00-27bc16c9c9f0)         |
 | 커뮤니티              | ![커뮤니티](https://github.com/nalsae/seb45_main_011/assets/101828759/a27f3bfd-3346-4070-a6b8-082b5708f73a)                     |
 | 게시글 상세           | ![게시글 상세](https://github.com/nalsae/seb45_main_011/assets/101828759/128584db-95cd-4edf-9161-74962f67d645)                  |
