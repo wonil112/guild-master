@@ -337,13 +337,13 @@
 ## 7. 구현 이미지
 
 | 페이지(기능)         | 이미지                                                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | 메인페이지 및 회원 가입   | ![회원 가입 페이지](https://github.com/user-attachments/assets/bb76dd95-8810-4797-8d5a-d96b4ffaf265)             |
 | 로그인                | ![로그인 페이지](https://github.com/user-attachments/assets/5c80df38-5641-46f0-a818-842c20ebf2ff)                |
 | 길드 검색하기         | ![길드 검색 페이지](https://github.com/user-attachments/assets/765f13b6-87b9-4494-9a8e-6c35443be3ed)         |
 | 길드 가입신청하기    | ![길드 검색 페이지](https://github.com/user-attachments/assets/d430e15d-d88e-495d-b87e-e31b2f3da18f)           |
 | 길드 가입승낙하기 | ![길드 페이지](https://github.com/user-attachments/assets/fb10edfe-dbf5-442e-83a0-0901657ba4bb) |
-| 이벤트  생성하기  | ![길드 페이지](https://github.com/user-attachments/assets/7d4bef47-0318-4f36-b6fe-e319ec60ac12)                |
-| 이벤트  참여하기        | ![길드 페이지](https://github.com/user-attachments/assets/c07aa239-55a1-45b6-a5a9-c64f29f4169c)               |
+| 이벤트 생성하기  | ![길드 페이지](https://github.com/user-attachments/assets/7d4bef47-0318-4f36-b6fe-e319ec60ac12)                |
+| 이벤트 참여하기        | ![길드 페이지](https://github.com/user-attachments/assets/c07aa239-55a1-45b6-a5a9-c64f29f4169c)               |
 
 <br>
